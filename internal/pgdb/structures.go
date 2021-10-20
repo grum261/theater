@@ -1,6 +1,8 @@
 package pgdb
 
-import "time"
+import (
+	"time"
+)
 
 type Costumes struct {
 	Id                           int

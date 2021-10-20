@@ -1,16 +1,27 @@
 package models
 
-type Costume struct {
-	Id                           int
-	Name, Description, Condition string
-	Size                         int
-	IsDecor                      bool
-	Performaces                  []string
-	Tags                         Tag
+type CostumeReturn struct {
+	Id      int
+	Clothes []Cloth
 }
 
-type Tag struct {
-	Colors    []string
-	Materials []string
-	Designers []string
+type CostumeInsert struct {
+	Name, Description, Location, Condition, Designer string
+	ClothesId                                        []int
+	IsDecor, IsArchived                              bool
+	Size                                             int
+	Image
+}
+
+type CostumeUpdate struct {
+	Id                                               int
+	Name, Description, Location, Condition, Designer string
+	ClothesId                                        []int
+	IsDecor, IsArchived                              bool
+	Size                                             int
+	Image
+}
+
+type Image struct {
+	Front, Back, Sideway, Details string
 }

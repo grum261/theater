@@ -8,9 +8,8 @@ import (
 )
 
 type CostumeService interface {
-	Create(ctx context.Context, costume models.Costume, colorsId, materialsId, designersId, performacesId []int) (models.Costume, error)
-	Update(ctx context.Context, costume models.Costume, colorsId, materialsId, designersId, performacesId []int) (models.Costume, error)
-	FindById(ctx context.Context, id int) (models.Costume, error)
+	Create(ctx context.Context, p models.CostumeInsert) (models.CostumeReturn, error)
+	Update(ctx context.Context, p models.CostumeUpdate) (models.CostumeReturn, error)
 	Delete(ctx context.Context, id int) error
 }
 
@@ -18,115 +17,200 @@ type CostumeHandler struct {
 	svc CostumeService
 }
 
-func NewCostumeHandler(svc CostumeService) *CostumeHandler {
+func newCostumeHandler(svc CostumeService) *CostumeHandler {
 	return &CostumeHandler{
 		svc: svc,
 	}
 }
 
-type CreateCostumeRequest struct {
-	TagsRequest    `json:"tags"`
-	Name           string `json:"name"`
-	Condition      string `json:"condition"`
-	Description    string `json:"description"`
-	Size           int    `json:"size"`
-	IsDecor        bool   `json:"isDecor"`
-	PerformancesId []int  `json:"performancesId"`
+type CostumeCreateUpdateRequest struct {
+	ImageRequestResponse `json:"images"`
+	Name                 string `json:"name"`
+	Description          string `json:"description"`
+	Location             string `json:"location"`
+	Condition            string `json:"condition"`
+	Designer             string `json:"designer"`
+	ClothesId            []int  `json:"clothes"`
+	IsDecor              bool   `json:"isDecor"`
+	IsArchived           bool   `json:"isArchived"`
+	Size                 int    `json:"size"`
 }
 
-type UpdateCostumeRequest struct {
-	TagsRequest    `json:"tags"`
-	Id             int    `json:"id"`
-	Name           string `json:"name"`
-	Condition      string `json:"condition"`
-	Description    string `json:"description"`
-	Size           int    `json:"size"`
-	IsDecor        bool   `json:"isDecor"`
-	PerformancesId []int  `json:"performancesId"`
+type ImageRequestResponse struct {
+	Front   string `json:"front"`
+	Back    string `json:"back"`
+	Sideway string `json:"sideway"`
+	Details string `json:"details"`
 }
 
 type CostumeResponse struct {
-	TagsResponse   `json:"tags"`
-	Id             int      `json:"id"`
-	Name           string   `json:"name"`
-	Condition      string   `json:"condition"`
-	Description    string   `json:"description"`
-	Size           int      `json:"size"`
-	IsDecor        bool     `json:"isDecor"`
-	PerformancesId []string `json:"performances"`
+	ImageRequestResponse `json:"images"`
+	CostumeTags          `json:"tags"`
+	Name                 string         `json:"name"`
+	Description          string         `json:"description"`
+	Location             string         `json:"location"`
+	Clothes              []CostumeCloth `json:"clothes"`
+	IsArchived           bool           `json:"isArchived"`
+	Size                 int            `json:"size"`
+	Id                   int            `json:"id"`
 }
 
-type TagsRequest struct {
-	ColorsId    []int `json:"colorsId"`
-	DesignersId []int `json:"designersId"`
-	MaterialsId []int `json:"materialsId"`
+type CostumeCloth struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
-type TagsResponse struct {
+type CostumeTags struct {
 	Colors    []string `json:"colors"`
-	Designers []string `json:"designers"`
 	Materials []string `json:"materials"`
+	Condition string   `json:"condition"`
+	IsDecor   bool     `json:"isDecor"`
 }
 
-func (ch *CostumeHandler) RegisterRoutes(r fiber.Router) {
-	r.Post("/costumes", ch.create)
-	r.Put("/costumes", ch.update)
-	r.Get("/costumes/:costumeId", ch.findById)
+func (ch *CostumeHandler) registerRoutes(r fiber.Router) {
+	r.Post("/", ch.create)
+	r.Put("/:id", ch.update)
+	r.Delete("/:id", ch.delete)
 }
 
 func (ch *CostumeHandler) create(c *fiber.Ctx) error {
-	req := CreateCostumeRequest{}
+	req := CostumeCreateUpdateRequest{}
 
 	if err := c.BodyParser(&req); err != nil {
 		return respondUnprocessableErr(c, err)
 	}
 
-	costume, err := ch.svc.Create(c.Context(), models.Costume{
+	costume, err := ch.svc.Create(c.Context(), models.CostumeInsert{
 		Name:        req.Name,
 		Description: req.Description,
+		Location:    req.Location,
 		Condition:   req.Condition,
-		Size:        req.Size,
+		Designer:    req.Designer,
+		ClothesId:   req.ClothesId,
 		IsDecor:     req.IsDecor,
-	}, req.ColorsId, req.MaterialsId, req.DesignersId, req.PerformancesId)
+		IsArchived:  req.IsArchived,
+		Size:        req.Size,
+		Image: models.Image{
+			Front:   req.ImageRequestResponse.Front,
+			Back:    req.ImageRequestResponse.Back,
+			Sideway: req.ImageRequestResponse.Sideway,
+			Details: req.ImageRequestResponse.Details,
+		},
+	})
 	if err != nil {
 		return respondInternalErr(c, err)
 	}
 
-	return respondOK(c, costume)
+	res := CostumeResponse{
+		ImageRequestResponse: ImageRequestResponse{
+			Front:   req.ImageRequestResponse.Front,
+			Back:    req.ImageRequestResponse.Back,
+			Sideway: req.ImageRequestResponse.Sideway,
+			Details: req.ImageRequestResponse.Details,
+		},
+		CostumeTags: CostumeTags{
+			Condition: req.Condition,
+			IsDecor:   req.IsDecor,
+		},
+		Name:        req.Name,
+		Description: req.Description,
+		Location:    req.Location,
+		IsArchived:  req.IsArchived,
+		Size:        req.Size,
+		Id:          costume.Id,
+	}
+
+	for _, c := range costume.Clothes {
+		res.Clothes = append(res.Clothes, CostumeCloth{
+			Id:   c.Id,
+			Name: c.Name,
+			Type: c.Type,
+		})
+
+		res.CostumeTags.Colors = append(res.CostumeTags.Colors, c.Colors...)
+		res.CostumeTags.Materials = append(res.CostumeTags.Materials, c.Materials...)
+	}
+
+	return respondOK(c, res)
 }
 
 func (ch *CostumeHandler) update(c *fiber.Ctx) error {
-	req := UpdateCostumeRequest{}
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return respondUnprocessableErr(c, err)
+	}
+
+	req := CostumeCreateUpdateRequest{}
 
 	if err := c.BodyParser(&req); err != nil {
 		return respondUnprocessableErr(c, err)
 	}
 
-	costume, err := ch.svc.Create(c.Context(), models.Costume{
-		Id:          req.Id,
+	costume, err := ch.svc.Update(c.Context(), models.CostumeUpdate{
+		Id:          id,
 		Name:        req.Name,
 		Description: req.Description,
+		Location:    req.Location,
 		Condition:   req.Condition,
-		Size:        req.Size,
+		Designer:    req.Designer,
+		ClothesId:   req.ClothesId,
 		IsDecor:     req.IsDecor,
-	}, req.ColorsId, req.MaterialsId, req.DesignersId, req.PerformancesId)
+		IsArchived:  req.IsArchived,
+		Size:        req.Size,
+		Image: models.Image{
+			Front:   req.ImageRequestResponse.Front,
+			Back:    req.ImageRequestResponse.Back,
+			Sideway: req.ImageRequestResponse.Sideway,
+			Details: req.ImageRequestResponse.Details,
+		},
+	})
 	if err != nil {
 		return respondInternalErr(c, err)
 	}
 
-	return respondOK(c, costume)
+	res := CostumeResponse{
+		ImageRequestResponse: ImageRequestResponse{
+			Front:   req.ImageRequestResponse.Front,
+			Back:    req.ImageRequestResponse.Back,
+			Sideway: req.ImageRequestResponse.Sideway,
+			Details: req.ImageRequestResponse.Details,
+		},
+		CostumeTags: CostumeTags{
+			Condition: req.Condition,
+			IsDecor:   req.IsDecor,
+		},
+		Name:        req.Name,
+		Description: req.Description,
+		Location:    req.Location,
+		IsArchived:  req.IsArchived,
+		Size:        req.Size,
+		Id:          id,
+	}
+
+	for _, c := range costume.Clothes {
+		res.Clothes = append(res.Clothes, CostumeCloth{
+			Id:   c.Id,
+			Name: c.Name,
+			Type: c.Type,
+		})
+
+		res.CostumeTags.Colors = append(res.CostumeTags.Colors, c.Colors...)
+		res.CostumeTags.Materials = append(res.CostumeTags.Materials, c.Materials...)
+	}
+
+	return respondOK(c, res)
 }
 
-func (ch *CostumeHandler) findById(c *fiber.Ctx) error {
-	costumeId, err := c.ParamsInt("costumeId")
+func (ch *CostumeHandler) delete(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
 	if err != nil {
 		return respondUnprocessableErr(c, err)
 	}
 
-	costume, err := ch.svc.FindById(c.Context(), costumeId)
-	if err != nil {
+	if err := ch.svc.Delete(c.Context(), id); err != nil {
 		return respondInternalErr(c, err)
 	}
 
-	return respondOK(c, costume)
+	return respondOK(c, id)
 }
