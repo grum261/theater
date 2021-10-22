@@ -1,6 +1,8 @@
 package pgdb
 
-import "context"
+import (
+	"context"
+)
 
 type costumeInsertParams struct {
 	Name, Description, Location, Condition, Designer  string
@@ -17,6 +19,15 @@ type costumeUpdateParams struct {
 	Clothes                                           []int
 	IsDecor, IsArchived                               bool
 	ImageFront, ImageBack, ImageSideway, ImageDetails string
+}
+
+type costumeReturn struct {
+	Id                                                int
+	Name, Description, Location, Condition, Designer  string
+	IsDecor, IsArchived                               bool
+	ImageFront, ImageBack, ImageSideway, ImageDetails string
+	Size                                              int
+	Clothes                                           []int
 }
 
 func (q *Queries) insertCostume(ctx context.Context, p costumeInsertParams) (int, error) {
@@ -41,6 +52,10 @@ func (q *Queries) insertCostume(ctx context.Context, p costumeInsertParams) (int
 		return 0, err
 	}
 
+	if err := tx.Commit(ctx); err != nil {
+		return 0, err
+	}
+
 	return costumeId, nil
 }
 
@@ -62,11 +77,51 @@ func (q *Queries) updateCostume(ctx context.Context, p costumeUpdateParams) erro
 		return err
 	}
 
+	if err := tx.Commit(ctx); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (q *Queries) deleteCostume(ctx context.Context, id int) error {
 	if _, err := q.db.Exec(ctx, costumeDelete, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (q *Queries) selectCostumesWithLimitOffset(ctx context.Context, limit, offset int) ([]costumeReturn, error) {
+	rows, err := q.db.Query(ctx, costumeSelectWithLimitOffset, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var costumes []costumeReturn
+
+	for rows.Next() {
+		var c costumeReturn
+
+		// c.id, c.name, c.size, c.condition, c.location, c.description, c.image_front,
+		// c.image_back, c.image_sideway, c.image_details, c.is_decor, c.is_archived, c.designer
+		if err := rows.Scan(
+			&c.Id, &c.Name, &c.Size, &c.Condition,
+			&c.Location, &c.Description, &c.ImageFront, &c.ImageBack,
+			&c.ImageSideway, &c.ImageDetails, c.IsDecor, &c.IsArchived, &c.Designer, &c.Clothes,
+		); err != nil {
+			return nil, err
+		}
+
+		costumes = append(costumes, c)
+	}
+
+	return costumes, nil
+}
+
+func (q *Queries) updateWriteOff(ctx context.Context, id int) error {
+	if _, err := q.db.Exec(ctx, costumeWriteOff, id); err != nil {
 		return err
 	}
 

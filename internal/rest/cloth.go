@@ -32,13 +32,9 @@ type ClothCreateUpdateRequest struct {
 }
 
 type ClothResponse struct {
-	Id   int          `json:"id"`
-	Name string       `json:"name"`
-	Type string       `json:"type"`
-	Tags TagsResponse `json:"tags"`
-}
-
-type TagsResponse struct {
+	Id        int      `json:"id"`
+	Name      string   `json:"name"`
+	Type      string   `json:"type"`
 	Colors    []string `json:"colors"`
 	Materials []string `json:"materials"`
 }
@@ -63,13 +59,11 @@ func (ch *ClothHandler) create(c *fiber.Ctx) error {
 	}
 
 	return respondOK(c, ClothResponse{
-		Id:   res.Id,
-		Name: res.Name,
-		Type: res.Type,
-		Tags: TagsResponse{
-			Colors:    res.Colors,
-			Materials: res.Materials,
-		},
+		Id:        res.Id,
+		Name:      res.Name,
+		Type:      res.Type,
+		Colors:    res.Colors,
+		Materials: res.Materials,
 	})
 }
 
@@ -91,13 +85,11 @@ func (ch *ClothHandler) update(c *fiber.Ctx) error {
 	}
 
 	return respondOK(c, ClothResponse{
-		Id:   res.Id,
-		Name: res.Name,
-		Type: res.Type,
-		Tags: TagsResponse{
-			Colors:    res.Colors,
-			Materials: res.Materials,
-		},
+		Id:        res.Id,
+		Name:      res.Name,
+		Type:      res.Type,
+		Colors:    res.Colors,
+		Materials: res.Materials,
 	})
 }
 
@@ -120,7 +112,13 @@ func (ch *ClothHandler) getWithLimitOffset(c *fiber.Ctx) error {
 		return respondUnprocessableErr(c, err)
 	}
 
-	clothes, err := ch.svc.GetWithLimitOffset(c.Context(), 20, page*20)
+	offset := 0
+
+	if page != 1 {
+		offset = page * 20
+	}
+
+	clothes, err := ch.svc.GetWithLimitOffset(c.Context(), 20, offset)
 	if err != nil {
 		return respondInternalErr(c, err)
 	}
@@ -129,13 +127,11 @@ func (ch *ClothHandler) getWithLimitOffset(c *fiber.Ctx) error {
 
 	for _, c := range clothes {
 		res = append(res, ClothResponse{
-			Id:   c.Id,
-			Name: c.Name,
-			Type: c.Type,
-			Tags: TagsResponse{
-				Colors:    c.Colors,
-				Materials: c.Materials,
-			},
+			Id:        c.Id,
+			Name:      c.Name,
+			Type:      c.Type,
+			Colors:    c.Colors,
+			Materials: c.Materials,
 		})
 	}
 

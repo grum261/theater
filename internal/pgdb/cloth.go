@@ -83,23 +83,23 @@ func (c *Cloth) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]mo
 	return _out, nil
 }
 
-func (c *Cloth) GetByIdArray(ctx context.Context, ids []int) ([]models.Cloth, error) {
-	clothes, err := c.q.selectByIdArray(ctx, ids)
-	if err != nil {
-		return nil, err
-	}
+// func (c *Cloth) GetByIdArray(ctx context.Context, ids []int) ([]models.Cloth, error) {
+// 	clothes, err := c.q.selectByIdArray(ctx, ids)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	var _out []models.Cloth
+// 	var _out []models.Cloth
 
-	for _, c := range clothes {
-		_out = append(_out, models.Cloth{
-			Id:        c.Id,
-			Name:      c.Name,
-			Type:      c.Type,
-			Colors:    c.Colors,
-			Materials: c.Materials,
-		})
-	}
+// 	for _, c := range clothes {
+// 		_out = append(_out, models.Cloth{
+// 			Id:        c.Id,
+// 			Name:      c.Name,
+// 			Type:      c.Type,
+// 			Colors:    c.Colors,
+// 			Materials: c.Materials,
+// 		})
+// 	}
 
-	return _out, err
-}
+// 	return _out, err
+// }

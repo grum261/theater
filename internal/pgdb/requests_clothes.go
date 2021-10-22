@@ -29,19 +29,34 @@ const (
 	clothDelete = `DELETE FROM clothes WHERE id = $1`
 
 	selectClothesLimitOffset = `
-	SELECT cl.id, cl.name, ct.name, array(SELECT name FROM colors WHERE cc.color_id = id), 
-	array(SELECT name FROM materials WHERE cm.material_id = id)
+	SELECT cl.id, cl.name, ct.name, array_agg(c.name), array_agg(m.name)
 	FROM clothes cl
-	INNER JOIN clothes_type ct ON cl.type_id = ct.id
-	INNER JOIN clothes_color cc ON cl.id = cc.costume_id
-	INNER JOIN clothes_materials cm ON cl.id = cm.costume_id
+	INNER JOIN clothes_types ct ON cl.type_id = ct.id
+	INNER JOIN clothes_colors cc ON cl.id = cc.cloth_id
+	INNER JOIN colors c ON cc.color_id = c.id
+	INNER JOIN clothes_materials cm ON cl.id = cm.cloth_id
+	INNER JOIN materials m ON cm.material_id = m.id
+	GROUP BY cl.id, ct.name
+	ORDER BY id desc
 	LIMIT $1 OFFSET $2`
-
-	selectClothesByIdArray = `SELECT cl.id, cl.name, ct.name, array(SELECT name FROM colors WHERE cc.color_id = id), 
-	array(SELECT name FROM materials WHERE cm.material_id = id)
+	selectClothesByIdArray = `
+	SELECT cl.id, cl.name, ct.name, array_agg(c.name), array_agg(m.name)
 	FROM clothes cl
-	INNER JOIN clothes_type ct ON cl.type_id = ct.id
-	INNER JOIN clothes_color cc ON cl.id = cc.costume_id
-	INNER JOIN clothes_materials cm ON cl.id = cm.costume_id
-	WHERE cl.id = any($1::int[])`
+	INNER JOIN clothes_types ct ON cl.type_id = ct.id
+	INNER JOIN clothes_colors cc ON cl.id = cc.cloth_id
+	INNER JOIN colors c ON cc.color_id = c.id
+	INNER JOIN clothes_materials cm ON cl.id = cm.cloth_id
+	INNER JOIN materials m ON cm.material_id = m.id
+	WHERE cl.id = any($1::int[])
+	GROUP BY cl.id, ct.name`
+	selectClothesById = `
+	SELECT cl.id, cl.name, ct.name, array_agg(c.name), array_agg(m.name)
+	FROM clothes cl
+	INNER JOIN clothes_types ct ON cl.type_id = ct.id
+	INNER JOIN clothes_colors cc ON cl.id = cc.cloth_id
+	INNER JOIN colors c ON cc.color_id = c.id
+	INNER JOIN clothes_materials cm ON cl.id = cm.cloth_id
+	INNER JOIN materials m ON cm.material_id = m.id
+	WHERE cl.id = $1
+	GROUP BY cl.id, ct.name`
 )

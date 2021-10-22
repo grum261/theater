@@ -77,6 +77,10 @@ func (q *Queries) insertCloth(ctx context.Context, p clothInsertParams) (clothRe
 		}
 	}
 
+	if err := tx.Commit(ctx); err != nil {
+		return clothReturn{}, err
+	}
+
 	return clothReturn{
 		Id:        clothId,
 		Name:      p.Name,
@@ -180,7 +184,7 @@ func (q *Queries) selectWithLimitOffset(ctx context.Context, limit, offset int) 
 	return r, nil
 }
 
-func (q *Queries) selectByIdArray(ctx context.Context, ids []int) ([]clothReturn, error) {
+func (q *Queries) selectClothesByIdArray(ctx context.Context, ids []int) ([]clothReturn, error) {
 	rows, err := q.db.Query(ctx, selectClothesByIdArray, ids)
 	if err != nil {
 		return nil, err

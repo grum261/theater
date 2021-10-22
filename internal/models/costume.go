@@ -5,6 +5,15 @@ type CostumeReturn struct {
 	Clothes []Cloth
 }
 
+type CostumeSelect struct {
+	Id                                               int
+	Name, Description, Location, Condition, Designer string
+	Clothes                                          []Cloth
+	IsDecor, IsArchived                              bool
+	Size                                             int
+	Image
+}
+
 type CostumeInsert struct {
 	Name, Description, Location, Condition, Designer string
 	ClothesId                                        []int

@@ -11,6 +11,8 @@ type CostumeService interface {
 	Create(ctx context.Context, p models.CostumeInsert) (models.CostumeReturn, error)
 	Update(ctx context.Context, p models.CostumeUpdate) (models.CostumeReturn, error)
 	Delete(ctx context.Context, id int) error
+	MakeWriteOff(ctx context.Context, id int) error
+	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.CostumeSelect, error)
 }
 
 type CostumeHandler struct {
@@ -24,7 +26,7 @@ func newCostumeHandler(svc CostumeService) *CostumeHandler {
 }
 
 type CostumeCreateUpdateRequest struct {
-	ImageRequestResponse `json:"images"`
+	ImageRequestResponse `json:"images,omitempty"`
 	Name                 string `json:"name"`
 	Description          string `json:"description"`
 	Location             string `json:"location"`
@@ -37,22 +39,22 @@ type CostumeCreateUpdateRequest struct {
 }
 
 type ImageRequestResponse struct {
-	Front   string `json:"front"`
-	Back    string `json:"back"`
-	Sideway string `json:"sideway"`
-	Details string `json:"details"`
+	Front   string `json:"front,omitempty"`
+	Back    string `json:"back,omitempty"`
+	Sideway string `json:"sideway,omitempty"`
+	Details string `json:"details,omitempty"`
 }
 
 type CostumeResponse struct {
-	ImageRequestResponse `json:"images"`
-	CostumeTags          `json:"tags"`
-	Name                 string         `json:"name"`
-	Description          string         `json:"description"`
-	Location             string         `json:"location"`
-	Clothes              []CostumeCloth `json:"clothes"`
-	IsArchived           bool           `json:"isArchived"`
-	Size                 int            `json:"size"`
-	Id                   int            `json:"id"`
+	*ImageRequestResponse `json:"images,omitempty"`
+	CostumeTags           `json:"tags"`
+	Name                  string         `json:"name"`
+	Description           string         `json:"description,omitempty"`
+	Location              string         `json:"location,omitempty"`
+	Clothes               []CostumeCloth `json:"clothes"`
+	IsArchived            bool           `json:"isArchived"`
+	Size                  int            `json:"size,omitempty"`
+	Id                    int            `json:"id"`
 }
 
 type CostumeCloth struct {
@@ -72,6 +74,73 @@ func (ch *CostumeHandler) registerRoutes(r fiber.Router) {
 	r.Post("/", ch.create)
 	r.Put("/:id", ch.update)
 	r.Delete("/:id", ch.delete)
+	r.Put("/write_offs/:id", ch.writeOff)
+	r.Get("/:page", ch.getWithLimitOffset)
+}
+
+func (ch *CostumeHandler) writeOff(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return respondUnprocessableErr(c, err)
+	}
+
+	if err := ch.svc.MakeWriteOff(c.Context(), id); err != nil {
+		return respondInternalErr(c, err)
+	}
+
+	return respondOK(c, id)
+}
+
+func (ch *CostumeHandler) getWithLimitOffset(c *fiber.Ctx) error {
+	page, err := c.ParamsInt("page")
+	if err != nil {
+		return respondUnprocessableErr(c, err)
+	}
+
+	offset := 0
+
+	if page != 1 {
+		offset = page * 20
+	}
+
+	costumes, err := ch.svc.GetWithLimitOffset(c.Context(), 20, offset)
+	if err != nil {
+		return respondInternalErr(c, err)
+	}
+
+	var res []CostumeResponse
+
+	for _, c := range costumes {
+		cos := CostumeResponse{
+			ImageRequestResponse: &ImageRequestResponse{
+				Front:   c.Image.Front,
+				Back:    c.Image.Back,
+				Sideway: c.Image.Sideway,
+				Details: c.Image.Details,
+			},
+			Name:        c.Name,
+			Description: c.Description,
+			Location:    c.Location,
+			IsArchived:  c.IsArchived,
+			Size:        c.Size,
+			Id:          c.Id,
+		}
+
+		for _, cl := range c.Clothes {
+			cos.Clothes = append(cos.Clothes, CostumeCloth{
+				Id:   cl.Id,
+				Name: cl.Name,
+				Type: cl.Type,
+			})
+
+			cos.Materials = cl.Materials
+			cos.Colors = cl.Colors
+		}
+
+		res = append(res, cos)
+	}
+
+	return respondOK(c, res)
 }
 
 func (ch *CostumeHandler) create(c *fiber.Ctx) error {
@@ -103,7 +172,7 @@ func (ch *CostumeHandler) create(c *fiber.Ctx) error {
 	}
 
 	res := CostumeResponse{
-		ImageRequestResponse: ImageRequestResponse{
+		ImageRequestResponse: &ImageRequestResponse{
 			Front:   req.ImageRequestResponse.Front,
 			Back:    req.ImageRequestResponse.Back,
 			Sideway: req.ImageRequestResponse.Sideway,
@@ -170,7 +239,7 @@ func (ch *CostumeHandler) update(c *fiber.Ctx) error {
 	}
 
 	res := CostumeResponse{
-		ImageRequestResponse: ImageRequestResponse{
+		ImageRequestResponse: &ImageRequestResponse{
 			Front:   req.ImageRequestResponse.Front,
 			Back:    req.ImageRequestResponse.Back,
 			Sideway: req.ImageRequestResponse.Sideway,

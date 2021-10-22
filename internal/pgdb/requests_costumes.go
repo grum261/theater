@@ -16,4 +16,15 @@ const (
 	INSERT INTO costumes_clothes (costume_id, cloth_id) (SELECT $1, unnest($2::int[]))`
 
 	costumeDelete = `DELETE FROM costumes WHERE id = $1`
+
+	costumeSelectWithLimitOffset = `
+	SELECT c.id, c.name, c.size, c.condition, c.location, c.description, c.image_front, 
+	c.image_back, c.image_sideway, c.image_details, c.is_decor, c.is_archived, c.designer, array_agg(ccl.costume_id)
+	FROM costumes c
+	INNER JOIN costumes_clothes ccl ON c.id = ccl.costume_id
+	GROUP BY c.id
+	ORDER BY c.id desc
+	LIMIT $1 OFFSET $2`
+
+	costumeWriteOff = `UPDATE costumes SET is_archived = true WHERE id = $1`
 )

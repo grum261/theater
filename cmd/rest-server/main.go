@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/grum261/theater/internal/models/service"
 	"github.com/grum261/theater/internal/pgdb"
 	"github.com/grum261/theater/internal/rest"
+	"github.com/grum261/theater/internal/service"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 )
