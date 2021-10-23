@@ -26,5 +26,5 @@ const (
 	ORDER BY c.id desc
 	LIMIT $1 OFFSET $2`
 
-	costumeWriteOff = `UPDATE costumes SET is_archived = true WHERE id = $1`
+	costumeWriteOff = `UPDATE costumes SET is_archived = true WHERE id = any($1::int[])`
 )

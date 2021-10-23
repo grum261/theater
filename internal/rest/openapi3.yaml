@@ -1,0 +1,1092 @@
+extensionprops: {}
+openapi: 3.0.0
+components:
+  extensionprops: {}
+  schemas:
+    Cloth:
+      ref: ""
+      value:
+        extensionprops: {}
+        type: object
+        properties:
+          colors:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+              items:
+                ref: ""
+                value:
+                  extensionprops: {}
+                  type: string
+          id:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: integer
+          materials:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: array
+              items:
+                ref: ""
+                value:
+                  extensionprops: {}
+                  type: string
+          name:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+          type:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+    Costume:
+      ref: ""
+      value:
+        extensionprops: {}
+        type: object
+        properties:
+          clothes:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: array
+              items:
+                ref: ""
+                value:
+                  extensionprops: {}
+                  type: object
+                  properties:
+                    id:
+                      ref: ""
+                      value:
+                        extensionprops: {}
+                        type: integer
+                    name:
+                      ref: ""
+                      value:
+                        extensionprops: {}
+                        type: string
+                    type:
+                      ref: ""
+                      value:
+                        extensionprops: {}
+                        type: string
+          description:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+              nullable: true
+          designer:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+          id:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: integer
+          images:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: object
+              nullable: true
+              properties:
+                back:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: string
+                    nullable: true
+                details:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: string
+                    nullable: true
+                front:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: string
+                    nullable: true
+                sideway:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: string
+                    nullable: true
+          isArchived:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: boolean
+          location:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+              nullable: true
+          name:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+          size:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: integer
+              nullable: true
+          tags:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: object
+              properties:
+                colors:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: array
+                    items:
+                      ref: ""
+                      value:
+                        extensionprops: {}
+                        type: string
+                condition:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: string
+                isDecor:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: boolean
+                materials:
+                  ref: ""
+                  value:
+                    extensionprops: {}
+                    type: array
+                    items:
+                      ref: ""
+                      value:
+                        extensionprops: {}
+                        type: string
+    Performance:
+      ref: ""
+      value:
+        extensionprops: {}
+        type: object
+        properties:
+          costumes:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: array
+              items:
+                ref: ""
+                value:
+                  extensionprops: {}
+                  type: object
+                  properties:
+                    "":
+                      ref: '#/components/schemas/Costume'
+                      value: null
+          duration:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: integer
+          id:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: integer
+          location:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+          name:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+          startAt:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+              format: date-time
+    Tag:
+      ref: ""
+      value:
+        extensionprops: {}
+        type: object
+        properties:
+          id:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: integer
+          name:
+            ref: ""
+            value:
+              extensionprops: {}
+              type: string
+  requestBodies:
+    CreateTagsRequest:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Тело запроса на создание цветов/материалов
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  name:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: string
+    CreateUpdateClothRequest:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Тело запроса для создания и обновления элемента костюма
+        required: true
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  colors:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      nullable: true
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: integer
+                  materials:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      nullable: true
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: integer
+                  name:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                  typeId:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: integer
+    CreateUpdateCostumeRequest:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Тело запроса для создания и обновления костюма
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  clothes:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: integer
+                  description:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      nullable: true
+                  designer:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                  images:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: object
+                      properties:
+                        back:
+                          ref: ""
+                          value:
+                            extensionprops: {}
+                            type: string
+                            nullable: true
+                        details:
+                          ref: ""
+                          value:
+                            extensionprops: {}
+                            type: string
+                            nullable: true
+                        front:
+                          ref: ""
+                          value:
+                            extensionprops: {}
+                            type: string
+                            nullable: true
+                        sideway:
+                          ref: ""
+                          value:
+                            extensionprops: {}
+                            type: string
+                            nullable: true
+                  isArchived:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: boolean
+                      nullable: true
+                  location:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                      nullable: true
+                  name:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                  size:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: integer
+                      nullable: true
+    MakeWriteOffsRequest:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Тело запроса для списания костюмов
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  id:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: integer
+    UpdateTagRequest:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Тело запроса на обновление названия тэга
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  "":
+                    ref: '#/components/schemas/Tag'
+                    value: null
+  responses:
+    CreateClothResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при успешном создании элемента костюма
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: object
+                      properties:
+                        "":
+                          ref: '#/components/schemas/Cloth'
+                          value: null
+    CreateCostumeResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при успешном создании костюма
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: object
+                      properties:
+                        "":
+                          ref: '#/components/schemas/Costume'
+                          value: null
+    DeleteResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при удалении чего-либо
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: integer
+    ErrorResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при любых ошибках
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+    GetClothesByPageResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при запросе на получение элементов костюмов по странице
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: object
+                          properties:
+                            "":
+                              ref: '#/components/schemas/Cloth'
+                              value: null
+    GetCostumesByPageResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при запросе на получение костюмов по странице
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: object
+                          properties:
+                            "":
+                              ref: '#/components/schemas/Costume'
+                              value: null
+    MakeWriteOffsResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при спсиании костюмов
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: string
+    TagUpdateResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при обновлении названия тэга
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  "":
+                    ref: '#/components/schemas/Tag'
+                    value: null
+    TagsResponse:
+      ref: ""
+      value:
+        extensionprops: {}
+        description: Ответ при успешном создании тэгов
+        content:
+          application/json:
+            extensionprops: {}
+            schema:
+              ref: ""
+              value:
+                extensionprops: {}
+                type: object
+                properties:
+                  error:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      nullable: true
+                  result:
+                    ref: ""
+                    value:
+                      extensionprops: {}
+                      type: array
+                      items:
+                        ref: ""
+                        value:
+                          extensionprops: {}
+                          type: object
+                          properties:
+                            "":
+                              ref: '#/components/schemas/Tag'
+                              value: null
+info:
+  extensionprops: {}
+  title: Theater API
+  version: "0.1"
+paths:
+  /api/v1/clothes:
+    extensionprops: {}
+    post:
+      extensionprops: {}
+      operationId: CreateCloth
+      requestBody:
+        ref: '#/components/requestBodies/CreateUpdateClothRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/CreateClothResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+  /api/v1/clothes/{clothId}:
+    extensionprops: {}
+    delete:
+      extensionprops: {}
+      operationId: DeleteCloth
+      responses:
+        "200":
+          ref: '#/components/responses/DeleteResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    put:
+      extensionprops: {}
+      operationId: UpdateCloth
+      requestBody:
+        ref: '#/components/requestBodies/CreateUpdateClothRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/CreateClothResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    parameters:
+    - ref: ""
+      value:
+        extensionprops: {}
+        name: clothId
+        in: path
+        required: true
+        schema:
+          ref: ""
+          value:
+            extensionprops: {}
+            type: integer
+  /api/v1/clothes/{clothesPage}:
+    extensionprops: {}
+    get:
+      extensionprops: {}
+      operationId: GetClothesByPage
+      responses:
+        "200":
+          ref: '#/components/responses/GetClothesByPageResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    parameters:
+    - ref: ""
+      value:
+        extensionprops: {}
+        name: clothesPage
+        in: path
+        required: true
+        schema:
+          ref: ""
+          value:
+            extensionprops: {}
+            type: integer
+  /api/v1/clothes/tags/colors:
+    extensionprops: {}
+    get:
+      extensionprops: {}
+      operationId: GetColors
+      responses:
+        "200":
+          ref: '#/components/responses/TagsResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    post:
+      extensionprops: {}
+      operationId: CreateColors
+      requestBody:
+        ref: '#/components/requestBodies/CreateTagsRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/TagsResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+  /api/v1/clothes/tags/colors/{colorId}:
+    extensionprops: {}
+    delete:
+      extensionprops: {}
+      operationId: DeleteColor
+      responses:
+        "200":
+          ref: '#/components/responses/DeleteResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    put:
+      extensionprops: {}
+      operationId: UpdateColorName
+      requestBody:
+        ref: '#/components/requestBodies/UpdateTagRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/TagUpdateResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    parameters:
+    - ref: ""
+      value:
+        extensionprops: {}
+        name: colorId
+        in: path
+        required: true
+        schema:
+          ref: ""
+          value:
+            extensionprops: {}
+            type: integer
+  /api/v1/clothes/tags/materials:
+    extensionprops: {}
+    get:
+      extensionprops: {}
+      operationId: GetMaterials
+      responses:
+        "200":
+          ref: '#/components/responses/TagsResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    post:
+      extensionprops: {}
+      operationId: CreateMaterials
+      requestBody:
+        ref: '#/components/requestBodies/CreateTagsRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/TagsResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+  /api/v1/clothes/tags/materials/{materialId}:
+    extensionprops: {}
+    delete:
+      extensionprops: {}
+      operationId: DeleteMaterial
+      responses:
+        "200":
+          ref: '#/components/responses/DeleteResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    put:
+      extensionprops: {}
+      operationId: UpdateMaterialName
+      requestBody:
+        ref: '#/components/requestBodies/UpdateTagRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/TagUpdateResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    parameters:
+    - ref: ""
+      value:
+        extensionprops: {}
+        name: materialId
+        in: path
+        required: true
+        schema:
+          ref: ""
+          value:
+            extensionprops: {}
+            type: integer
+  /api/v1/clothes/types:
+    extensionprops: {}
+    get:
+      extensionprops: {}
+      operationId: GetClothesTypes
+      responses:
+        "200":
+          ref: '#/components/responses/TagsResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    post:
+      extensionprops: {}
+      operationId: CreateTypes
+      requestBody:
+        ref: '#/components/requestBodies/CreateTagsRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/TagsResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+  /api/v1/clothes/types/{typeId}:
+    extensionprops: {}
+    delete:
+      extensionprops: {}
+      operationId: DeleteClothType
+      responses:
+        "200":
+          ref: '#/components/responses/DeleteResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    put:
+      extensionprops: {}
+      operationId: UpdateClothesTypeName
+      requestBody:
+        ref: '#/components/requestBodies/UpdateTagRequest'
+        value: null
+      responses:
+        "200":
+          ref: '#/components/responses/TagUpdateResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    parameters:
+    - ref: ""
+      value:
+        extensionprops: {}
+        name: typeId
+        in: path
+        required: true
+        schema:
+          ref: ""
+          value:
+            extensionprops: {}
+            type: integer
+  /api/v1/costumes:
+    extensionprops: {}
+    post:
+      extensionprops: {}
+      operationId: CreateCostume
+      responses:
+        "200":
+          ref: '#/components/responses/CreateCostumeResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+  /api/v1/costumes/{costumeId}:
+    extensionprops: {}
+    delete:
+      extensionprops: {}
+      operationId: DeleteCostume
+      responses:
+        "200":
+          ref: '#/components/responses/DeleteResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    put:
+      extensionprops: {}
+      operationId: UpdateCostume
+      responses:
+        "200":
+          ref: '#/components/responses/CreateCostumeResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    parameters:
+    - ref: ""
+      value:
+        extensionprops: {}
+        name: costumeId
+        in: path
+        required: true
+        schema:
+          ref: ""
+          value:
+            extensionprops: {}
+            type: integer
+  /api/v1/costumes/{costumesPage}:
+    extensionprops: {}
+    get:
+      extensionprops: {}
+      operationId: GetCostumesByPage
+      responses:
+        "200":
+          ref: '#/components/responses/GetCostumesByPageResponse'
+          value: null
+        "422":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+        "500":
+          ref: '#/components/responses/ErrorResponse'
+          value: null
+    parameters:
+    - ref: ""
+      value:
+        extensionprops: {}
+        name: costumesPage
+        in: path
+        required: true
+        schema:
+          ref: ""
+          value:
+            extensionprops: {}
+            type: integer
+servers:
+- extensionprops: {}
+  url: http://localhost:8000/
+  description: Local dev

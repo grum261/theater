@@ -7,7 +7,7 @@ COPY . .
 RUN go mod download
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-s -w" \ 
-    github.com/grum261/theater/cmd/rest-server
+    github.com/grum261/theater/cmd/rest_server
 
 RUN CGO_ENABLED=0 GOOS=linux go install -a -installsuffix cgo -ldflags "-s -w" -tags 'pgx' \
     github.com/golang-migrate/migrate/v4/cmd/migrate@v4.14.0
@@ -28,11 +28,11 @@ ENV PATH=/api/bin/:$PATH
 
 COPY --from=certificates /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
-COPY --from=builder /build/rest-server ./bin/rest-server
+COPY --from=builder /build/rest_server ./bin/rest_server
 COPY --from=builder /go/bin/migrate ./bin/migrate
 COPY --from=builder /build/internal/migrations .
 COPY --from=builder /build/.env.dev .
 
 EXPOSE 8000
 
-CMD ["rest-server", "-env", "/api/.env.dev"]
+CMD ["rest_server", "-env", "/api/.env.dev"]

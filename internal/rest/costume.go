@@ -11,7 +11,7 @@ type CostumeService interface {
 	Create(ctx context.Context, p models.CostumeInsert) (models.CostumeReturn, error)
 	Update(ctx context.Context, p models.CostumeUpdate) (models.CostumeReturn, error)
 	Delete(ctx context.Context, id int) error
-	MakeWriteOff(ctx context.Context, id int) error
+	MakeWriteOff(ctx context.Context, ids []int) error
 	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.CostumeSelect, error)
 }
 
@@ -55,6 +55,7 @@ type CostumeResponse struct {
 	IsArchived            bool           `json:"isArchived"`
 	Size                  int            `json:"size,omitempty"`
 	Id                    int            `json:"id"`
+	Designer              string         `json:"designer"`
 }
 
 type CostumeCloth struct {
@@ -70,6 +71,10 @@ type CostumeTags struct {
 	IsDecor   bool     `json:"isDecor"`
 }
 
+type CostumeWriteOffRequest struct {
+	Id []int `json:"id"`
+}
+
 func (ch *CostumeHandler) registerRoutes(r fiber.Router) {
 	r.Post("/", ch.create)
 	r.Put("/:id", ch.update)
@@ -79,16 +84,17 @@ func (ch *CostumeHandler) registerRoutes(r fiber.Router) {
 }
 
 func (ch *CostumeHandler) writeOff(c *fiber.Ctx) error {
-	id, err := c.ParamsInt("id")
-	if err != nil {
+	req := CostumeWriteOffRequest{}
+
+	if err := c.BodyParser(&req); err != nil {
 		return respondUnprocessableErr(c, err)
 	}
 
-	if err := ch.svc.MakeWriteOff(c.Context(), id); err != nil {
+	if err := ch.svc.MakeWriteOff(c.Context(), req.Id); err != nil {
 		return respondInternalErr(c, err)
 	}
 
-	return respondOK(c, id)
+	return respondOK(c, "ok")
 }
 
 func (ch *CostumeHandler) getWithLimitOffset(c *fiber.Ctx) error {
@@ -118,12 +124,17 @@ func (ch *CostumeHandler) getWithLimitOffset(c *fiber.Ctx) error {
 				Sideway: c.Image.Sideway,
 				Details: c.Image.Details,
 			},
+			CostumeTags: CostumeTags{
+				Condition: c.Condition,
+				IsDecor:   c.IsDecor,
+			},
 			Name:        c.Name,
 			Description: c.Description,
 			Location:    c.Location,
 			IsArchived:  c.IsArchived,
 			Size:        c.Size,
 			Id:          c.Id,
+			Designer:    c.Designer,
 		}
 
 		for _, cl := range c.Clothes {
@@ -133,8 +144,8 @@ func (ch *CostumeHandler) getWithLimitOffset(c *fiber.Ctx) error {
 				Type: cl.Type,
 			})
 
-			cos.Materials = cl.Materials
-			cos.Colors = cl.Colors
+			cos.CostumeTags.Materials = cl.Materials
+			cos.CostumeTags.Colors = cl.Colors
 		}
 
 		res = append(res, cos)
@@ -188,6 +199,7 @@ func (ch *CostumeHandler) create(c *fiber.Ctx) error {
 		IsArchived:  req.IsArchived,
 		Size:        req.Size,
 		Id:          costume.Id,
+		Designer:    req.Designer,
 	}
 
 	for _, c := range costume.Clothes {
@@ -255,6 +267,7 @@ func (ch *CostumeHandler) update(c *fiber.Ctx) error {
 		IsArchived:  req.IsArchived,
 		Size:        req.Size,
 		Id:          id,
+		Designer:    req.Designer,
 	}
 
 	for _, c := range costume.Clothes {

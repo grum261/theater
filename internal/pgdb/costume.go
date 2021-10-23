@@ -199,6 +199,6 @@ func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]
 	return _out, nil
 }
 
-func (c *Costume) MakeWriteOff(ctx context.Context, id int) error {
-	return c.q.updateWriteOff(ctx, id)
+func (c *Costume) MakeWriteOff(ctx context.Context, ids []int) error {
+	return c.q.updateWriteOff(ctx, ids)
 }

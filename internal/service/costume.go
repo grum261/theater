@@ -11,7 +11,7 @@ type CostumeRepository interface {
 	Update(ctx context.Context, p models.CostumeUpdate) (models.CostumeReturn, error)
 	Delete(ctx context.Context, id int) error
 	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.CostumeSelect, error)
-	MakeWriteOff(ctx context.Context, id int) error
+	MakeWriteOff(ctx context.Context, ids []int) error
 }
 
 type Costume struct {
@@ -36,8 +36,8 @@ func (c *Costume) Delete(ctx context.Context, id int) error {
 	return c.repo.Delete(ctx, id)
 }
 
-func (c *Costume) MakeWriteOff(ctx context.Context, id int) error {
-	return c.repo.MakeWriteOff(ctx, id)
+func (c *Costume) MakeWriteOff(ctx context.Context, ids []int) error {
+	return c.repo.MakeWriteOff(ctx, ids)
 }
 
 func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.CostumeSelect, error) {

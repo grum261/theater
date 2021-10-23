@@ -3,10 +3,10 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./build/rest-server/Dockerfile
+      dockerfile: ./build/rest_server/Dockerfile
     ports:
     - "8000:8000"
-    command: rest-server -env /api/.env.dev
+    command: rest_server -env /api/.env.dev
     environment:
       DATABASE_HOST: postgres
     depends_on:

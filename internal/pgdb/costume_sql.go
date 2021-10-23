@@ -120,8 +120,8 @@ func (q *Queries) selectCostumesWithLimitOffset(ctx context.Context, limit, offs
 	return costumes, nil
 }
 
-func (q *Queries) updateWriteOff(ctx context.Context, id int) error {
-	if _, err := q.db.Exec(ctx, costumeWriteOff, id); err != nil {
+func (q *Queries) updateWriteOff(ctx context.Context, ids []int) error {
+	if _, err := q.db.Exec(ctx, costumeWriteOff, ids); err != nil {
 		return err
 	}
 
