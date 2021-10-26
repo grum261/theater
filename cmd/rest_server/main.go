@@ -46,6 +46,8 @@ func main() {
 
 	h.RegisterRoutes(app.Group("/api/v1"))
 
+	app.Static("/", "./assets/swagger-ui")
+
 	log.Fatal(app.Listen(":8000"))
 }
 

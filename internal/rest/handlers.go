@@ -20,7 +20,7 @@ func (h *Handlers) RegisterRoutes(r fiber.Router) {
 	r.Get("/openapi3.json", func(c *fiber.Ctx) error {
 		swagger := NewOpenAPI()
 
-		return respondOK(c, &swagger)
+		return c.Status(200).JSON(&swagger)
 	})
 
 	clothes := r.Group("/clothes")

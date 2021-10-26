@@ -43,7 +43,7 @@ func (ch *ClothHandler) registerRoutes(r fiber.Router) {
 	r.Post("/", ch.create)
 	r.Put("/:id", ch.update)
 	r.Delete("/:id", ch.delete)
-	r.Get("/:page", ch.getWithLimitOffset)
+	r.Get("/pages/:page", ch.getWithLimitOffset)
 }
 
 func (ch *ClothHandler) create(c *fiber.Ctx) error {

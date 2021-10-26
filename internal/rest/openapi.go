@@ -67,7 +67,7 @@ func NewOpenAPI() openapi3.T {
 							"colors":    openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema()),
 							"materials": openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema()),
 							"isDecor":   openapi3.NewBoolSchema(),
-							"condition": openapi3.NewStringSchema(),
+							"condition": openapi3.NewStringSchema().WithEnum("нормальное", "плохое", "хорошее"),
 						},
 					),
 					"images": openapi3.NewObjectSchema().WithProperties(
@@ -172,46 +172,30 @@ func NewOpenAPI() openapi3.T {
 		"CreateClothResponse": &openapi3.ResponseRef{
 			Value: openapi3.NewResponse().
 				WithDescription("Ответ при успешном создании элемента костюма").
-				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().WithProperties(
-					map[string]*openapi3.Schema{
-						"error":  openapi3.NewAnyOfSchema().WithNullable(),
-						"result": openapi3.NewObjectSchema().WithPropertyRef("", &openapi3.SchemaRef{Ref: "#/components/schemas/Cloth"}),
-					},
-				))),
+				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().
+					WithProperty("error", openapi3.NewStringSchema().WithNullable()).
+					WithPropertyRef("result", &openapi3.SchemaRef{Ref: "#/components/schemas/Cloth"}))),
 		},
 		"CreateCostumeResponse": &openapi3.ResponseRef{
 			Value: openapi3.NewResponse().
 				WithDescription("Ответ при успешном создании костюма").
-				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().WithProperties(
-					map[string]*openapi3.Schema{
-						"error":  openapi3.NewAnyOfSchema().WithNullable(),
-						"result": openapi3.NewObjectSchema().WithPropertyRef("", &openapi3.SchemaRef{Ref: "#/components/schemas/Costume"}),
-					},
-				))),
+				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().
+					WithProperty("error", openapi3.NewStringSchema().WithNullable()).
+					WithPropertyRef("result", &openapi3.SchemaRef{Ref: "#/components/schemas/Costume"}))),
 		},
 		"GetClothesByPageResponse": &openapi3.ResponseRef{
 			Value: openapi3.NewResponse().
 				WithDescription("Ответ при запросе на получение элементов костюмов по странице").
-				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().WithProperties(
-					map[string]*openapi3.Schema{
-						"error": openapi3.NewAnyOfSchema().WithNullable(),
-						"result": openapi3.NewArraySchema().WithItems(openapi3.NewObjectSchema().WithPropertyRef(
-							"", &openapi3.SchemaRef{Ref: "#/components/schemas/Cloth"}),
-						),
-					},
-				))),
+				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().
+					WithProperty("error", openapi3.NewAnyOfSchema().WithNullable()).
+					WithProperty("result", openapi3.NewArraySchema().WithItems(swagger.Components.Schemas["Cloth"].Value)))),
 		},
 		"GetCostumesByPageResponse": &openapi3.ResponseRef{
 			Value: openapi3.NewResponse().
 				WithDescription("Ответ при запросе на получение костюмов по странице").
-				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().WithProperties(
-					map[string]*openapi3.Schema{
-						"error": openapi3.NewAnyOfSchema().WithNullable(),
-						"result": openapi3.NewArraySchema().WithItems(
-							openapi3.NewObjectSchema().WithPropertyRef("", &openapi3.SchemaRef{Ref: "#/components/schemas/Costume"}),
-						),
-					},
-				))),
+				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().
+					WithProperty("error", openapi3.NewAnyOfSchema().WithNullable()).
+					WithProperty("result", openapi3.NewArraySchema().WithItems(swagger.Components.Schemas["Costume"].Value)))),
 		},
 		"DeleteResponse": &openapi3.ResponseRef{
 			Value: openapi3.NewResponse().
@@ -236,23 +220,16 @@ func NewOpenAPI() openapi3.T {
 		"TagsResponse": &openapi3.ResponseRef{
 			Value: openapi3.NewResponse().
 				WithDescription("Ответ при успешном создании тэгов").
-				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().WithProperties(
-					map[string]*openapi3.Schema{
-						"error": openapi3.NewAnyOfSchema().WithNullable(),
-						"result": openapi3.NewArraySchema().WithItems(
-							openapi3.NewObjectSchema().WithPropertyRef("", &openapi3.SchemaRef{Ref: "#/components/schemas/Tag"}),
-						),
-					},
-				))),
+				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().
+					WithProperty("error", openapi3.NewAnyOfSchema().WithNullable()).
+					WithProperty("result", openapi3.NewArraySchema().WithItems(swagger.Components.Schemas["Tag"].Value)))),
 		},
 		"TagUpdateResponse": &openapi3.ResponseRef{
 			Value: openapi3.NewResponse().
 				WithDescription("Ответ при обновлении названия тэга").
-				WithContent(openapi3.NewContentWithJSONSchema(
-					openapi3.NewObjectSchema().WithPropertyRef(
-						"", &openapi3.SchemaRef{Ref: "#/components/schemas/Tag"},
-					),
-				)),
+				WithContent(openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().
+					WithProperty("error", openapi3.NewAnyOfSchema().WithNullable()).
+					WithProperty("result", openapi3.NewArraySchema().WithItems(swagger.Components.Schemas["Tag"].Value)))),
 		},
 	}
 
@@ -271,9 +248,9 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/{clothesPage}": &openapi3.PathItem{
+		"/api/v1/clothes/pages/{page}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
-				{Value: openapi3.NewPathParameter("clothesPage").WithSchema(openapi3.NewIntegerSchema())},
+				{Value: openapi3.NewPathParameter("page").WithSchema(openapi3.NewIntegerSchema())},
 			},
 			Get: &openapi3.Operation{
 				OperationID: "GetClothesByPage",
@@ -284,9 +261,9 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/{clothId}": &openapi3.PathItem{
+		"/api/v1/clothes/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
-				{Value: openapi3.NewPathParameter("clothId").WithSchema(openapi3.NewIntegerSchema())},
+				{Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema())},
 			},
 			Put: &openapi3.Operation{
 				OperationID: "UpdateCloth",
@@ -320,9 +297,9 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/costumes/{costumesPage}": &openapi3.PathItem{
+		"/api/v1/costumes/pages/{page}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
-				{Value: openapi3.NewPathParameter("costumesPage").WithSchema(openapi3.NewIntegerSchema())},
+				{Value: openapi3.NewPathParameter("page").WithSchema(openapi3.NewIntegerSchema())},
 			},
 			Get: &openapi3.Operation{
 				OperationID: "GetCostumesByPage",
@@ -333,9 +310,9 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/costumes/{costumeId}": &openapi3.PathItem{
+		"/api/v1/costumes/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
-				{Value: openapi3.NewPathParameter("costumeId").WithSchema(openapi3.NewIntegerSchema())},
+				{Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema())},
 			},
 			Put: &openapi3.Operation{
 				OperationID: "UpdateCostume",
@@ -375,10 +352,10 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/tags/colors/{colorId}": &openapi3.PathItem{
+		"/api/v1/clothes/tags/colors/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
 				{
-					Value: openapi3.NewPathParameter("colorId").WithSchema(openapi3.NewIntegerSchema()),
+					Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema()),
 				},
 			},
 			Put: &openapi3.Operation{
@@ -420,9 +397,9 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/tags/materials/{materialId}": &openapi3.PathItem{
+		"/api/v1/clothes/tags/materials/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
-				{Value: openapi3.NewPathParameter("materialId").WithSchema(openapi3.NewIntegerSchema())},
+				{Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema())},
 			},
 			Put: &openapi3.Operation{
 				OperationID: "UpdateMaterialName",
@@ -463,9 +440,9 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/types/{typeId}": &openapi3.PathItem{
+		"/api/v1/clothes/types/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
-				{Value: openapi3.NewPathParameter("typeId").WithSchema(openapi3.NewIntegerSchema())},
+				{Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema())},
 			},
 			Put: &openapi3.Operation{
 				OperationID: "UpdateClothesTypeName",
