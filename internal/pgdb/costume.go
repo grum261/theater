@@ -5,7 +5,6 @@ import (
 
 	"github.com/grum261/theater/internal/models"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"golang.org/x/sync/errgroup"
 )
 
 type Costume struct {
@@ -119,81 +118,43 @@ func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]
 		return nil, err
 	}
 
-	g, ctx := errgroup.WithContext(ctx)
-
-	clothCh := make(chan []int)
-	g.Go(func() error {
-		defer close(clothCh)
-		for _, co := range costumes {
-			select {
-			case clothCh <- co.Clothes:
-			case <-ctx.Done():
-				return err
-			}
-		}
-
-		return nil
-	})
-
-	costumesCh := make(chan models.CostumeSelect)
-	for i := 0; i < 20; i++ {
-		g.Go(func() error {
-			j := 0
-			for clothesId := range clothCh {
-				clothes, err := c.q.selectClothesByIdArray(ctx, clothesId)
-				if err != nil {
-					return err
-				}
-
-				co := models.CostumeSelect{
-					Id:          costumes[j].Id,
-					Name:        costumes[j].Name,
-					Description: costumes[j].Description,
-					Location:    costumes[j].Location,
-					Condition:   costumes[j].Condition,
-					Designer:    costumes[j].Designer,
-					IsDecor:     costumes[j].IsDecor,
-					IsArchived:  costumes[j].IsArchived,
-					Size:        costumes[j].Size,
-					Image: models.Image{
-						Front:   costumes[j].ImageFront,
-						Back:    costumes[j].ImageBack,
-						Sideway: costumes[j].ImageSideway,
-						Details: costumes[j].ImageDetails,
-					},
-				}
-
-				for _, cl := range clothes {
-					co.Clothes = append(co.Clothes, models.Cloth{
-						Id:        cl.Id,
-						Name:      cl.Name,
-						Type:      cl.Type,
-						Colors:    cl.Colors,
-						Materials: cl.Materials,
-					})
-				}
-
-				select {
-				case costumesCh <- co:
-					j++
-				case <-ctx.Done():
-					return ctx.Err()
-				}
-			}
-
-			return nil
-		})
-	}
-
-	go func() {
-		g.Wait()
-		close(costumesCh)
-	}()
-
 	var _out []models.CostumeSelect
 
-	for r := range costumesCh {
-		_out = append(_out, r)
+	for _, co := range costumes {
+		cos := models.CostumeSelect{
+			Id:          co.Id,
+			Name:        co.Name,
+			Description: co.Description,
+			Location:    co.Location,
+			Condition:   co.Condition,
+			Designer:    co.Designer,
+			IsDecor:     co.IsDecor,
+			IsArchived:  co.IsArchived,
+			Size:        co.Size,
+			Image: models.Image{
+				Front:   co.ImageFront,
+				Back:    co.ImageBack,
+				Sideway: co.ImageSideway,
+				Details: co.ImageDetails,
+			},
+		}
+
+		clothes, err := c.q.selectClothesByIdArray(ctx, co.Clothes)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, cl := range clothes {
+			cos.Clothes = append(cos.Clothes, models.Cloth{
+				Id:        cl.Id,
+				Name:      cl.Name,
+				Type:      cl.Type,
+				Colors:    cl.Colors,
+				Materials: cl.Materials,
+			})
+		}
+
+		_out = append(_out, cos)
 	}
 
 	return _out, nil

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/grum261/theater/internal/pgdb"
 	"github.com/grum261/theater/internal/rest"
 	"github.com/grum261/theater/internal/service"
@@ -47,6 +48,8 @@ func main() {
 	h.RegisterRoutes(app.Group("/api/v1"))
 
 	app.Static("/", "./assets/swagger-ui")
+
+	app.Use(logger.New())
 
 	log.Fatal(app.Listen(":8000"))
 }

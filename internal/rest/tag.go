@@ -37,7 +37,7 @@ type TagNamesCreateRequest struct {
 
 func (th *TagHandler) registerRoutes(r fiber.Router) {
 	r.Post("/tags/:table", th.create)
-	r.Put("/tags/:table", th.update)
+	r.Put("/tags/:table/:id", th.update)
 	r.Delete("/tags/:table/:id", th.delete)
 	r.Get("/tags/:table", th.getAll)
 

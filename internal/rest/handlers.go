@@ -26,7 +26,7 @@ func (h *Handlers) RegisterRoutes(r fiber.Router) {
 	clothes := r.Group("/clothes")
 
 	h.ClothHandler.registerRoutes(clothes)
-	h.TagHandler.registerRoutes(clothes)
+	h.TagHandler.registerRoutes(r)
 
 	costumes := r.Group("/costumes")
 	h.CostumeHandler.registerRoutes(costumes)

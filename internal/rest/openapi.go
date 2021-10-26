@@ -19,7 +19,7 @@ func NewOpenAPI() openapi3.T {
 		Security: []openapi3.SecurityRequirement{},
 		Servers: []*openapi3.Server{
 			{
-				URL:         "http://localhost:8000/",
+				URL:         "http://172.31.129.144:8000/",
 				Description: "Local dev",
 			},
 		},
@@ -145,7 +145,7 @@ func NewOpenAPI() openapi3.T {
 				WithDescription("Тело запроса на создание цветов/материалов").
 				WithContent(
 					openapi3.NewContentWithJSONSchema(openapi3.NewObjectSchema().WithProperty(
-						"name", openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema())),
+						"names", openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema())),
 					),
 				),
 		},
@@ -153,7 +153,8 @@ func NewOpenAPI() openapi3.T {
 			Value: openapi3.NewRequestBody().
 				WithDescription("Тело запроса на обновление названия тэга").
 				WithContent(openapi3.NewContentWithJSONSchema(
-					openapi3.NewObjectSchema().WithPropertyRef("", &openapi3.SchemaRef{Ref: "#/components/schemas/Tag"}),
+					openapi3.NewObjectSchema().
+						WithProperty("name", openapi3.NewStringSchema()),
 				)),
 		},
 	}
@@ -352,7 +353,7 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/tags/colors/{id}": &openapi3.PathItem{
+		"/api/v1/tags/colors/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
 				{
 					Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema()),
@@ -378,7 +379,7 @@ func NewOpenAPI() openapi3.T {
 		},
 
 		// Материалы элементов костюма
-		"/api/v1/clothes/tags/materials": &openapi3.PathItem{
+		"/api/v1/tags/materials": &openapi3.PathItem{
 			Get: &openapi3.Operation{
 				OperationID: "GetMaterials",
 				Responses: openapi3.Responses{
@@ -397,7 +398,7 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/tags/materials/{id}": &openapi3.PathItem{
+		"/api/v1/tags/materials/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
 				{Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema())},
 			},
@@ -421,7 +422,7 @@ func NewOpenAPI() openapi3.T {
 		},
 
 		// Типы элементов костюма
-		"/api/v1/clothes/types": &openapi3.PathItem{
+		"/api/v1/types": &openapi3.PathItem{
 			Get: &openapi3.Operation{
 				OperationID: "GetClothesTypes",
 				Responses: openapi3.Responses{
@@ -440,7 +441,7 @@ func NewOpenAPI() openapi3.T {
 				},
 			},
 		},
-		"/api/v1/clothes/types/{id}": &openapi3.PathItem{
+		"/api/v1/types/{id}": &openapi3.PathItem{
 			Parameters: []*openapi3.ParameterRef{
 				{Value: openapi3.NewPathParameter("id").WithSchema(openapi3.NewIntegerSchema())},
 			},
