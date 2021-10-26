@@ -50,7 +50,7 @@ func (th *TagHandler) registerRoutes(r fiber.Router) {
 func (th *TagHandler) create(c *fiber.Ctx) error {
 	param := c.Params("table")
 
-	if strings.Contains(c.OriginalURL(), "clothes/types") {
+	if strings.Contains(c.OriginalURL(), "types") {
 		param = "types"
 	}
 
@@ -84,7 +84,7 @@ func (th *TagHandler) create(c *fiber.Ctx) error {
 func (th *TagHandler) update(c *fiber.Ctx) error {
 	param := c.Params("table")
 
-	if strings.Contains(c.OriginalURL(), "clothes/types") {
+	if strings.Contains(c.OriginalURL(), "types") {
 		param = "types"
 	}
 
@@ -108,7 +108,7 @@ func (th *TagHandler) update(c *fiber.Ctx) error {
 func (th *TagHandler) delete(c *fiber.Ctx) error {
 	param := c.Params("table")
 
-	if strings.Contains(c.OriginalURL(), "clothes/types") {
+	if strings.Contains(c.OriginalURL(), "types") {
 		param = "types"
 	}
 
@@ -131,7 +131,7 @@ func (th *TagHandler) delete(c *fiber.Ctx) error {
 func (th *TagHandler) getAll(c *fiber.Ctx) error {
 	param := c.Params("table")
 
-	if strings.Contains(c.OriginalURL(), "clothes/types") {
+	if strings.Contains(c.OriginalURL(), "types") {
 		param = "types"
 	}
 
