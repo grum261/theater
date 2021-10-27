@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/grum261/theater/internal/pgdb"
 	"github.com/grum261/theater/internal/rest"
@@ -44,6 +45,8 @@ func main() {
 		WriteTimeout: time.Second,
 		IdleTimeout:  time.Second,
 	})
+
+	app.Use(cors.New())
 
 	f, err := os.Create("./log/messages.log")
 	if err != nil {
