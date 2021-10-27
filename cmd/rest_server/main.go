@@ -45,7 +45,15 @@ func main() {
 		IdleTimeout:  time.Second,
 	})
 
-	app.Use(logger.New())
+	f, err := os.Create("./log/messages.log")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	app.Use(logger.New(logger.Config{
+		Output: f,
+	}))
 
 	app.Static("/", "./assets/swagger-ui")
 
