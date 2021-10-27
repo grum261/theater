@@ -7,8 +7,8 @@ import (
 )
 
 type ClothRepository interface {
-	Create(ctx context.Context, name string, typeId int, colors, materials []int) (models.Cloth, error)
-	Update(ctx context.Context, id, typeId int, name string, colors, materials []int) (models.Cloth, error)
+	Create(ctx context.Context, name, location, designer, condition string, typeId int, colors, materials []int) (models.Cloth, error)
+	Update(ctx context.Context, id, typeId int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error)
 	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.Cloth, error)
 	Delete(ctx context.Context, id int) error
 }
@@ -23,8 +23,8 @@ func newCloth(repo ClothRepository) *Cloth {
 	}
 }
 
-func (c *Cloth) Create(ctx context.Context, name string, typeId int, colors, materials []int) (models.Cloth, error) {
-	_out, err := c.repo.Create(ctx, name, typeId, colors, materials)
+func (c *Cloth) Create(ctx context.Context, name, location, designer, condition string, typeId int, colors, materials []int) (models.Cloth, error) {
+	_out, err := c.repo.Create(ctx, name, location, designer, condition, typeId, colors, materials)
 	if err != nil {
 		return models.Cloth{}, err
 	}
@@ -32,8 +32,8 @@ func (c *Cloth) Create(ctx context.Context, name string, typeId int, colors, mat
 	return _out, nil
 }
 
-func (c *Cloth) Update(ctx context.Context, id, typeId int, name string, colors, materials []int) (models.Cloth, error) {
-	_out, err := c.repo.Update(ctx, id, typeId, name, colors, materials)
+func (c *Cloth) Update(ctx context.Context, id, typeId int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error) {
+	_out, err := c.repo.Update(ctx, id, typeId, name, location, designer, condition, colors, materials)
 	if err != nil {
 		return models.Cloth{}, err
 	}

@@ -7,6 +7,9 @@ import (
 type clothInsertParams struct {
 	Name              string
 	TypeId            int
+	Designer          string
+	Location          string
+	Condition         string
 	Colors, Materials []int
 }
 
@@ -14,12 +17,18 @@ type clothUpdateParams struct {
 	Id                int
 	Name              string
 	TypeId            int
+	Location          string
+	Designer          string
+	Condition         string
 	Colors, Materials []int
 }
 
 type clothReturn struct {
 	Id                int
 	Name, Type        string
+	Location          string
+	Designer          string
+	Condition         string
 	Colors, Materials []string
 }
 
@@ -35,7 +44,7 @@ func (q *Queries) insertCloth(ctx context.Context, p clothInsertParams) (clothRe
 	}
 	defer tx.Rollback(ctx)
 
-	if err := tx.QueryRow(ctx, clothInsert, p.Name, p.TypeId).Scan(&clothId, &typeName); err != nil {
+	if err := tx.QueryRow(ctx, clothInsert, p.Name, p.TypeId, p.Location, p.Designer, p.Condition).Scan(&clothId, &typeName); err != nil {
 		return clothReturn{}, err
 	}
 
@@ -99,7 +108,7 @@ func (q *Queries) updateCloth(ctx context.Context, p clothUpdateParams) (clothRe
 	}
 	defer tx.Rollback(ctx)
 
-	if err := tx.QueryRow(ctx, clothUpdate, p.Id, p.Name, p.TypeId).Scan(&typeName); err != nil {
+	if err := tx.QueryRow(ctx, clothUpdate, p.Id, p.Name, p.TypeId, p.Location, p.Designer, p.Condition).Scan(&typeName); err != nil {
 		return clothReturn{}, err
 	}
 
@@ -174,7 +183,7 @@ func (q *Queries) selectWithLimitOffset(ctx context.Context, limit, offset int) 
 	for rows.Next() {
 		var c clothReturn
 
-		if err := rows.Scan(&c.Id, &c.Name, &c.Type, &c.Colors, &c.Materials); err != nil {
+		if err := rows.Scan(&c.Id, &c.Name, &c.Type, &c.Location, &c.Designer, &c.Condition, &c.Colors, &c.Materials); err != nil {
 			return nil, err
 		}
 
@@ -196,7 +205,7 @@ func (q *Queries) selectClothesByIdArray(ctx context.Context, ids []int) ([]clot
 	for rows.Next() {
 		var c clothReturn
 
-		if err := rows.Scan(&c.Id, &c.Name, &c.Type, &c.Colors, &c.Materials); err != nil {
+		if err := rows.Scan(&c.Id, &c.Name, &c.Type, &c.Location, &c.Designer, &c.Condition, &c.Colors, &c.Materials); err != nil {
 			return nil, err
 		}
 

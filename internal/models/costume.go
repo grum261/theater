@@ -5,29 +5,29 @@ type CostumeReturn struct {
 	Clothes []Cloth
 }
 
-type CostumeSelect struct {
-	Id                                               int
-	Name, Description, Location, Condition, Designer string
-	Clothes                                          []Cloth
-	IsDecor, IsArchived                              bool
-	Size                                             int
+type Costume struct {
+	Id                                     int
+	Name, Description, Location, Condition string
+	Clothes                                []Cloth
+	IsDecor, IsArchived                    bool
+	Size                                   int
 	Image
 }
 
 type CostumeInsert struct {
-	Name, Description, Location, Condition, Designer string
-	ClothesId                                        []int
-	IsDecor, IsArchived                              bool
-	Size                                             int
+	Name, Description, Condition string
+	ClothesId                    []int
+	IsDecor, IsArchived          bool
+	Size                         int
 	Image
 }
 
 type CostumeUpdate struct {
-	Id                                               int
-	Name, Description, Location, Condition, Designer string
-	ClothesId                                        []int
-	IsDecor, IsArchived                              bool
-	Size                                             int
+	Id                           int
+	Name, Description, Condition string
+	ClothesId                    []int
+	IsDecor, IsArchived          bool
+	Size                         int
 	Image
 }
 

@@ -27,9 +27,6 @@ func (c *Costume) Create(ctx context.Context, p models.CostumeInsert) (models.Co
 	id, err := c.q.WithTx(tx).insertCostume(ctx, costumeInsertParams{
 		Name:         p.Name,
 		Description:  p.Description,
-		Location:     p.Location,
-		Condition:    p.Condition,
-		Designer:     p.Designer,
 		Size:         p.Size,
 		Clothes:      p.ClothesId,
 		IsDecor:      p.IsDecor,
@@ -55,6 +52,9 @@ func (c *Costume) Create(ctx context.Context, p models.CostumeInsert) (models.Co
 			Id:        c.Id,
 			Name:      c.Name,
 			Type:      c.Type,
+			Location:  c.Location,
+			Designer:  c.Designer,
+			Condition: c.Condition,
 			Colors:    c.Colors,
 			Materials: c.Materials,
 		})
@@ -72,9 +72,6 @@ func (c *Costume) Update(ctx context.Context, p models.CostumeUpdate) (models.Co
 		Id:           p.Id,
 		Name:         p.Name,
 		Description:  p.Description,
-		Location:     p.Location,
-		Condition:    p.Condition,
-		Designer:     p.Designer,
 		Size:         p.Size,
 		Clothes:      p.ClothesId,
 		IsDecor:      p.IsDecor,
@@ -100,6 +97,9 @@ func (c *Costume) Update(ctx context.Context, p models.CostumeUpdate) (models.Co
 			Id:        c.Id,
 			Name:      c.Name,
 			Type:      c.Type,
+			Location:  c.Location,
+			Designer:  c.Designer,
+			Condition: c.Condition,
 			Colors:    c.Colors,
 			Materials: c.Materials,
 		})
@@ -112,22 +112,19 @@ func (c *Costume) Delete(ctx context.Context, id int) error {
 	return c.q.deleteCostume(ctx, id)
 }
 
-func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.CostumeSelect, error) {
+func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.Costume, error) {
 	costumes, err := c.q.selectCostumesWithLimitOffset(ctx, limit, offset)
 	if err != nil {
 		return nil, err
 	}
 
-	var _out []models.CostumeSelect
+	var _out []models.Costume
 
 	for _, co := range costumes {
-		cos := models.CostumeSelect{
+		cos := models.Costume{
 			Id:          co.Id,
 			Name:        co.Name,
 			Description: co.Description,
-			Location:    co.Location,
-			Condition:   co.Condition,
-			Designer:    co.Designer,
 			IsDecor:     co.IsDecor,
 			IsArchived:  co.IsArchived,
 			Size:        co.Size,
@@ -149,6 +146,9 @@ func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]
 				Id:        cl.Id,
 				Name:      cl.Name,
 				Type:      cl.Type,
+				Location:  cl.Location,
+				Designer:  cl.Designer,
+				Condition: cl.Condition,
 				Colors:    cl.Colors,
 				Materials: cl.Materials,
 			})

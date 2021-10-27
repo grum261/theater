@@ -19,7 +19,7 @@ func NewOpenAPI() openapi3.T {
 		Security: []openapi3.SecurityRequirement{},
 		Servers: []*openapi3.Server{
 			{
-				URL:         "http://172.31.129.144:8000/",
+				URL:         "http://172.27.228.196:8000/",
 				Description: "Local dev",
 			},
 		},
@@ -40,6 +40,9 @@ func NewOpenAPI() openapi3.T {
 					"id":        openapi3.NewIntegerSchema(),
 					"name":      openapi3.NewStringSchema(),
 					"type":      openapi3.NewStringSchema(),
+					"location":  openapi3.NewStringSchema().WithNullable(),
+					"designer":  openapi3.NewStringSchema().WithNullable(),
+					"condition": openapi3.NewStringSchema().WithEnum("плохое", "нормальное", "хорошее"),
 					"colors":    openapi3.NewStringSchema().WithItems(openapi3.NewStringSchema()),
 					"materials": openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema()),
 				},
@@ -50,16 +53,17 @@ func NewOpenAPI() openapi3.T {
 				map[string]*openapi3.Schema{
 					"id":          openapi3.NewIntegerSchema(),
 					"name":        openapi3.NewStringSchema(),
-					"location":    openapi3.NewStringSchema().WithNullable(),
-					"designer":    openapi3.NewStringSchema(),
 					"isArchived":  openapi3.NewBoolSchema(),
 					"description": openapi3.NewStringSchema().WithNullable(),
 					"size":        openapi3.NewIntegerSchema().WithNullable(),
 					"clothes": openapi3.NewArraySchema().WithItems(openapi3.NewObjectSchema().WithProperties(
 						map[string]*openapi3.Schema{
-							"id":   openapi3.NewIntegerSchema(),
-							"name": openapi3.NewStringSchema(),
-							"type": openapi3.NewStringSchema(),
+							"id":        openapi3.NewIntegerSchema(),
+							"name":      openapi3.NewStringSchema(),
+							"type":      openapi3.NewStringSchema(),
+							"location":  openapi3.NewStringSchema(),
+							"designer":  openapi3.NewStringSchema(),
+							"condition": openapi3.NewStringSchema().WithEnum("плохое", "нормальное", "хорошее"),
 						},
 					)),
 					"tags": openapi3.NewObjectSchema().WithProperties(
@@ -67,7 +71,6 @@ func NewOpenAPI() openapi3.T {
 							"colors":    openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema()),
 							"materials": openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema()),
 							"isDecor":   openapi3.NewBoolSchema(),
-							"condition": openapi3.NewStringSchema().WithEnum("нормальное", "плохое", "хорошее"),
 						},
 					),
 					"images": openapi3.NewObjectSchema().WithProperties(
@@ -105,6 +108,9 @@ func NewOpenAPI() openapi3.T {
 					map[string]*openapi3.Schema{
 						"name":      openapi3.NewStringSchema(),
 						"typeId":    openapi3.NewIntegerSchema(),
+						"location":  openapi3.NewStringSchema().WithNullable(),
+						"designer":  openapi3.NewStringSchema().WithNullable(),
+						"condition": openapi3.NewStringSchema(),
 						"colors":    openapi3.NewArraySchema().WithItems(openapi3.NewIntegerSchema()).WithNullable(),
 						"materials": openapi3.NewArraySchema().WithItems(openapi3.NewIntegerSchema()).WithNullable(),
 					},
@@ -118,7 +124,6 @@ func NewOpenAPI() openapi3.T {
 						"name":        openapi3.NewStringSchema(),
 						"location":    openapi3.NewStringSchema().WithNullable(),
 						"description": openapi3.NewStringSchema().WithNullable(),
-						"designer":    openapi3.NewStringSchema(),
 						"size":        openapi3.NewIntegerSchema().WithNullable(),
 						"clothes":     openapi3.NewArraySchema().WithItems(openapi3.NewIntegerSchema()),
 						"images": openapi3.NewObjectSchema().WithProperties(
@@ -291,6 +296,7 @@ func NewOpenAPI() openapi3.T {
 		"/api/v1/costumes": &openapi3.PathItem{
 			Post: &openapi3.Operation{
 				OperationID: "CreateCostume",
+				RequestBody: &openapi3.RequestBodyRef{Ref: "#/components/requestBodies/CreateUpdateCostumeRequest"},
 				Responses: openapi3.Responses{
 					"422": &openapi3.ResponseRef{Ref: "#/components/responses/ErrorResponse"},
 					"500": &openapi3.ResponseRef{Ref: "#/components/responses/ErrorResponse"},
@@ -317,6 +323,7 @@ func NewOpenAPI() openapi3.T {
 			},
 			Put: &openapi3.Operation{
 				OperationID: "UpdateCostume",
+				RequestBody: &openapi3.RequestBodyRef{Ref: "#/components/requestBodies/CreateUpdateCostumeRequest"},
 				Responses: openapi3.Responses{
 					"422": &openapi3.ResponseRef{Ref: "#/components/responses/ErrorResponse"},
 					"500": &openapi3.ResponseRef{Ref: "#/components/responses/ErrorResponse"},

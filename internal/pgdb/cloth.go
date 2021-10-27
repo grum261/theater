@@ -17,10 +17,13 @@ func newCloth(db *pgxpool.Pool) *Cloth {
 	}
 }
 
-func (c *Cloth) Create(ctx context.Context, name string, typeId int, colors, materials []int) (models.Cloth, error) {
+func (c *Cloth) Create(ctx context.Context, name, location, designer, condition string, typeId int, colors, materials []int) (models.Cloth, error) {
 	cl, err := c.q.insertCloth(ctx, clothInsertParams{
 		Name:      name,
 		TypeId:    typeId,
+		Location:  location,
+		Designer:  designer,
+		Condition: condition,
 		Colors:    colors,
 		Materials: materials,
 	})
@@ -32,16 +35,22 @@ func (c *Cloth) Create(ctx context.Context, name string, typeId int, colors, mat
 		Id:        cl.Id,
 		Name:      name,
 		Type:      cl.Type,
+		Location:  location,
+		Designer:  designer,
+		Condition: condition,
 		Colors:    cl.Colors,
 		Materials: cl.Materials,
 	}, nil
 }
 
-func (c *Cloth) Update(ctx context.Context, id, typeId int, name string, colors, materials []int) (models.Cloth, error) {
+func (c *Cloth) Update(ctx context.Context, id, typeId int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error) {
 	cl, err := c.q.updateCloth(ctx, clothUpdateParams{
 		Id:        id,
 		Name:      name,
 		TypeId:    typeId,
+		Location:  location,
+		Designer:  designer,
+		Condition: condition,
 		Colors:    colors,
 		Materials: materials,
 	})
@@ -53,6 +62,9 @@ func (c *Cloth) Update(ctx context.Context, id, typeId int, name string, colors,
 		Id:        id,
 		Name:      name,
 		Type:      cl.Type,
+		Location:  location,
+		Designer:  designer,
+		Condition: condition,
 		Colors:    cl.Colors,
 		Materials: cl.Materials,
 	}, nil
@@ -75,6 +87,9 @@ func (c *Cloth) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]mo
 			Id:        c.Id,
 			Name:      c.Name,
 			Type:      c.Type,
+			Location:  c.Location,
+			Designer:  c.Designer,
+			Condition: c.Condition,
 			Colors:    c.Colors,
 			Materials: c.Materials,
 		})
@@ -82,24 +97,3 @@ func (c *Cloth) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]mo
 
 	return _out, nil
 }
-
-// func (c *Cloth) GetByIdArray(ctx context.Context, ids []int) ([]models.Cloth, error) {
-// 	clothes, err := c.q.selectByIdArray(ctx, ids)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	var _out []models.Cloth
-
-// 	for _, c := range clothes {
-// 		_out = append(_out, models.Cloth{
-// 			Id:        c.Id,
-// 			Name:      c.Name,
-// 			Type:      c.Type,
-// 			Colors:    c.Colors,
-// 			Materials: c.Materials,
-// 		})
-// 	}
-
-// 	return _out, err
-// }

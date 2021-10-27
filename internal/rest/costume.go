@@ -12,7 +12,7 @@ type CostumeService interface {
 	Update(ctx context.Context, p models.CostumeUpdate) (models.CostumeReturn, error)
 	Delete(ctx context.Context, id int) error
 	MakeWriteOff(ctx context.Context, ids []int) error
-	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.CostumeSelect, error)
+	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.Costume, error)
 }
 
 type CostumeHandler struct {
@@ -29,9 +29,6 @@ type CostumeCreateUpdateRequest struct {
 	ImageRequestResponse `json:"images,omitempty"`
 	Name                 string `json:"name"`
 	Description          string `json:"description"`
-	Location             string `json:"location"`
-	Condition            string `json:"condition"`
-	Designer             string `json:"designer"`
 	ClothesId            []int  `json:"clothes"`
 	IsDecor              bool   `json:"isDecor"`
 	IsArchived           bool   `json:"isArchived"`
@@ -50,24 +47,24 @@ type CostumeResponse struct {
 	CostumeTags           `json:"tags"`
 	Name                  string         `json:"name"`
 	Description           string         `json:"description,omitempty"`
-	Location              string         `json:"location,omitempty"`
 	Clothes               []CostumeCloth `json:"clothes"`
 	IsArchived            bool           `json:"isArchived"`
 	Size                  int            `json:"size,omitempty"`
 	Id                    int            `json:"id"`
-	Designer              string         `json:"designer"`
 }
 
 type CostumeCloth struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Type      string `json:"type"`
+	Location  string `json:"location"`
+	Designer  string `json:"designer"`
+	Condition string `json:"condition"`
 }
 
 type CostumeTags struct {
 	Colors    []string `json:"colors"`
 	Materials []string `json:"materials"`
-	Condition string   `json:"condition"`
 	IsDecor   bool     `json:"isDecor"`
 }
 
@@ -125,23 +122,22 @@ func (ch *CostumeHandler) getWithLimitOffset(c *fiber.Ctx) error {
 				Details: c.Image.Details,
 			},
 			CostumeTags: CostumeTags{
-				Condition: c.Condition,
-				IsDecor:   c.IsDecor,
+				IsDecor: c.IsDecor,
 			},
 			Name:        c.Name,
 			Description: c.Description,
-			Location:    c.Location,
 			IsArchived:  c.IsArchived,
 			Size:        c.Size,
 			Id:          c.Id,
-			Designer:    c.Designer,
 		}
 
 		for _, cl := range c.Clothes {
 			cos.Clothes = append(cos.Clothes, CostumeCloth{
-				Id:   cl.Id,
-				Name: cl.Name,
-				Type: cl.Type,
+				Id:        cl.Id,
+				Name:      cl.Name,
+				Type:      cl.Type,
+				Location:  cl.Location,
+				Condition: cl.Condition,
 			})
 
 			cos.CostumeTags.Materials = cl.Materials
@@ -164,9 +160,6 @@ func (ch *CostumeHandler) create(c *fiber.Ctx) error {
 	costume, err := ch.svc.Create(c.Context(), models.CostumeInsert{
 		Name:        req.Name,
 		Description: req.Description,
-		Location:    req.Location,
-		Condition:   req.Condition,
-		Designer:    req.Designer,
 		ClothesId:   req.ClothesId,
 		IsDecor:     req.IsDecor,
 		IsArchived:  req.IsArchived,
@@ -190,23 +183,23 @@ func (ch *CostumeHandler) create(c *fiber.Ctx) error {
 			Details: req.ImageRequestResponse.Details,
 		},
 		CostumeTags: CostumeTags{
-			Condition: req.Condition,
-			IsDecor:   req.IsDecor,
+			IsDecor: req.IsDecor,
 		},
 		Name:        req.Name,
 		Description: req.Description,
-		Location:    req.Location,
 		IsArchived:  req.IsArchived,
 		Size:        req.Size,
 		Id:          costume.Id,
-		Designer:    req.Designer,
 	}
 
 	for _, c := range costume.Clothes {
 		res.Clothes = append(res.Clothes, CostumeCloth{
-			Id:   c.Id,
-			Name: c.Name,
-			Type: c.Type,
+			Id:        c.Id,
+			Name:      c.Name,
+			Type:      c.Type,
+			Location:  c.Location,
+			Designer:  c.Designer,
+			Condition: c.Condition,
 		})
 
 		res.CostumeTags.Colors = append(res.CostumeTags.Colors, c.Colors...)
@@ -232,9 +225,6 @@ func (ch *CostumeHandler) update(c *fiber.Ctx) error {
 		Id:          id,
 		Name:        req.Name,
 		Description: req.Description,
-		Location:    req.Location,
-		Condition:   req.Condition,
-		Designer:    req.Designer,
 		ClothesId:   req.ClothesId,
 		IsDecor:     req.IsDecor,
 		IsArchived:  req.IsArchived,
@@ -258,23 +248,23 @@ func (ch *CostumeHandler) update(c *fiber.Ctx) error {
 			Details: req.ImageRequestResponse.Details,
 		},
 		CostumeTags: CostumeTags{
-			Condition: req.Condition,
-			IsDecor:   req.IsDecor,
+			IsDecor: req.IsDecor,
 		},
 		Name:        req.Name,
 		Description: req.Description,
-		Location:    req.Location,
 		IsArchived:  req.IsArchived,
 		Size:        req.Size,
 		Id:          id,
-		Designer:    req.Designer,
 	}
 
 	for _, c := range costume.Clothes {
 		res.Clothes = append(res.Clothes, CostumeCloth{
-			Id:   c.Id,
-			Name: c.Name,
-			Type: c.Type,
+			Id:        c.Id,
+			Name:      c.Name,
+			Type:      c.Type,
+			Location:  c.Location,
+			Designer:  c.Designer,
+			Condition: c.Condition,
 		})
 
 		res.CostumeTags.Colors = append(res.CostumeTags.Colors, c.Colors...)

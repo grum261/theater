@@ -8,10 +8,10 @@ type Performance struct {
 	Location   string
 	StartingAt time.Time
 	Duration   time.Duration
-	Costumes   []CostumeSelect
+	Costumes   []Costume
 }
 
 type PerformanceReturn struct {
 	Id       int
-	Costumes []CostumeSelect
+	Costumes []Costume
 }
