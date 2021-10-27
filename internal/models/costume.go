@@ -10,7 +10,6 @@ type Costume struct {
 	Name, Description, Location, Condition string
 	Clothes                                []Cloth
 	IsDecor, IsArchived                    bool
-	Size                                   int
 	Image
 }
 
@@ -18,7 +17,6 @@ type CostumeInsert struct {
 	Name, Description, Condition string
 	ClothesId                    []int
 	IsDecor, IsArchived          bool
-	Size                         int
 	Image
 }
 
@@ -27,7 +25,6 @@ type CostumeUpdate struct {
 	Name, Description, Condition string
 	ClothesId                    []int
 	IsDecor, IsArchived          bool
-	Size                         int
 	Image
 }
 

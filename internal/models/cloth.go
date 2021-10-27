@@ -7,5 +7,6 @@ type Cloth struct {
 	Designer          string
 	Location          string
 	Condition         string
+	Size              int
 	Colors, Materials []string
 }

@@ -17,13 +17,14 @@ func newCloth(db *pgxpool.Pool) *Cloth {
 	}
 }
 
-func (c *Cloth) Create(ctx context.Context, name, location, designer, condition string, typeId int, colors, materials []int) (models.Cloth, error) {
+func (c *Cloth) Create(ctx context.Context, name, location, designer, condition string, typeId, size int, colors, materials []int) (models.Cloth, error) {
 	cl, err := c.q.insertCloth(ctx, clothInsertParams{
 		Name:      name,
 		TypeId:    typeId,
 		Location:  location,
 		Designer:  designer,
 		Condition: condition,
+		Size:      size,
 		Colors:    colors,
 		Materials: materials,
 	})
@@ -43,7 +44,7 @@ func (c *Cloth) Create(ctx context.Context, name, location, designer, condition 
 	}, nil
 }
 
-func (c *Cloth) Update(ctx context.Context, id, typeId int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error) {
+func (c *Cloth) Update(ctx context.Context, id, typeId, size int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error) {
 	cl, err := c.q.updateCloth(ctx, clothUpdateParams{
 		Id:        id,
 		Name:      name,
@@ -51,6 +52,7 @@ func (c *Cloth) Update(ctx context.Context, id, typeId int, name, location, desi
 		Location:  location,
 		Designer:  designer,
 		Condition: condition,
+		Size:      size,
 		Colors:    colors,
 		Materials: materials,
 	})
@@ -65,6 +67,7 @@ func (c *Cloth) Update(ctx context.Context, id, typeId int, name, location, desi
 		Location:  location,
 		Designer:  designer,
 		Condition: condition,
+		Size:      size,
 		Colors:    cl.Colors,
 		Materials: cl.Materials,
 	}, nil
@@ -90,6 +93,7 @@ func (c *Cloth) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]mo
 			Location:  c.Location,
 			Designer:  c.Designer,
 			Condition: c.Condition,
+			Size:      c.Size,
 			Colors:    c.Colors,
 			Materials: c.Materials,
 		})

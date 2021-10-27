@@ -27,7 +27,6 @@ func (c *Costume) Create(ctx context.Context, p models.CostumeInsert) (models.Co
 	id, err := c.q.WithTx(tx).insertCostume(ctx, costumeInsertParams{
 		Name:         p.Name,
 		Description:  p.Description,
-		Size:         p.Size,
 		Clothes:      p.ClothesId,
 		IsDecor:      p.IsDecor,
 		IsArchived:   p.IsArchived,
@@ -55,6 +54,7 @@ func (c *Costume) Create(ctx context.Context, p models.CostumeInsert) (models.Co
 			Location:  c.Location,
 			Designer:  c.Designer,
 			Condition: c.Condition,
+			Size:      c.Size,
 			Colors:    c.Colors,
 			Materials: c.Materials,
 		})
@@ -72,7 +72,6 @@ func (c *Costume) Update(ctx context.Context, p models.CostumeUpdate) (models.Co
 		Id:           p.Id,
 		Name:         p.Name,
 		Description:  p.Description,
-		Size:         p.Size,
 		Clothes:      p.ClothesId,
 		IsDecor:      p.IsDecor,
 		IsArchived:   p.IsArchived,
@@ -100,6 +99,7 @@ func (c *Costume) Update(ctx context.Context, p models.CostumeUpdate) (models.Co
 			Location:  c.Location,
 			Designer:  c.Designer,
 			Condition: c.Condition,
+			Size:      c.Size,
 			Colors:    c.Colors,
 			Materials: c.Materials,
 		})
@@ -127,7 +127,6 @@ func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]
 			Description: co.Description,
 			IsDecor:     co.IsDecor,
 			IsArchived:  co.IsArchived,
-			Size:        co.Size,
 			Image: models.Image{
 				Front:   co.ImageFront,
 				Back:    co.ImageBack,
@@ -149,6 +148,7 @@ func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]
 				Location:  cl.Location,
 				Designer:  cl.Designer,
 				Condition: cl.Condition,
+				Size:      cl.Size,
 				Colors:    cl.Colors,
 				Materials: cl.Materials,
 			})

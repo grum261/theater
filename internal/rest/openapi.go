@@ -42,6 +42,7 @@ func NewOpenAPI() openapi3.T {
 					"type":      openapi3.NewStringSchema(),
 					"location":  openapi3.NewStringSchema().WithNullable(),
 					"designer":  openapi3.NewStringSchema().WithNullable(),
+					"size":      openapi3.NewIntegerSchema(),
 					"condition": openapi3.NewStringSchema().WithEnum("плохое", "нормальное", "хорошее"),
 					"colors":    openapi3.NewStringSchema().WithItems(openapi3.NewStringSchema()),
 					"materials": openapi3.NewArraySchema().WithItems(openapi3.NewStringSchema()),
@@ -55,7 +56,6 @@ func NewOpenAPI() openapi3.T {
 					"name":        openapi3.NewStringSchema(),
 					"isArchived":  openapi3.NewBoolSchema(),
 					"description": openapi3.NewStringSchema().WithNullable(),
-					"size":        openapi3.NewIntegerSchema().WithNullable(),
 					"clothes": openapi3.NewArraySchema().WithItems(openapi3.NewObjectSchema().WithProperties(
 						map[string]*openapi3.Schema{
 							"id":        openapi3.NewIntegerSchema(),
@@ -63,6 +63,7 @@ func NewOpenAPI() openapi3.T {
 							"type":      openapi3.NewStringSchema(),
 							"location":  openapi3.NewStringSchema(),
 							"designer":  openapi3.NewStringSchema(),
+							"size":      openapi3.NewIntegerSchema(),
 							"condition": openapi3.NewStringSchema().WithEnum("плохое", "нормальное", "хорошее"),
 						},
 					)),
@@ -111,6 +112,7 @@ func NewOpenAPI() openapi3.T {
 						"location":  openapi3.NewStringSchema().WithNullable(),
 						"designer":  openapi3.NewStringSchema().WithNullable(),
 						"condition": openapi3.NewStringSchema(),
+						"size":      openapi3.NewIntegerSchema(),
 						"colors":    openapi3.NewArraySchema().WithItems(openapi3.NewIntegerSchema()).WithNullable(),
 						"materials": openapi3.NewArraySchema().WithItems(openapi3.NewIntegerSchema()).WithNullable(),
 					},
@@ -124,7 +126,6 @@ func NewOpenAPI() openapi3.T {
 						"name":        openapi3.NewStringSchema(),
 						"location":    openapi3.NewStringSchema().WithNullable(),
 						"description": openapi3.NewStringSchema().WithNullable(),
-						"size":        openapi3.NewIntegerSchema().WithNullable(),
 						"clothes":     openapi3.NewArraySchema().WithItems(openapi3.NewIntegerSchema()),
 						"images": openapi3.NewObjectSchema().WithProperties(
 							map[string]*openapi3.Schema{

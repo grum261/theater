@@ -6,7 +6,6 @@ import (
 
 type costumeInsertParams struct {
 	Name, Description                                 string
-	Size                                              int
 	Clothes                                           []int
 	IsDecor, IsArchived                               bool
 	ImageFront, ImageBack, ImageSideway, ImageDetails string
@@ -15,7 +14,6 @@ type costumeInsertParams struct {
 type costumeUpdateParams struct {
 	Id                                                int
 	Name, Description                                 string
-	Size                                              int
 	Clothes                                           []int
 	IsDecor, IsArchived                               bool
 	ImageFront, ImageBack, ImageSideway, ImageDetails string
@@ -26,7 +24,6 @@ type costumeReturn struct {
 	Name, Description                                 string
 	IsDecor, IsArchived                               bool
 	ImageFront, ImageBack, ImageSideway, ImageDetails string
-	Size                                              int
 	Clothes                                           []int
 }
 
@@ -41,7 +38,7 @@ func (q *Queries) insertCostume(ctx context.Context, p costumeInsertParams) (int
 
 	if err := tx.QueryRow(
 		ctx, costumeInsert, p.Name, p.Description, p.IsDecor,
-		p.IsArchived, p.Size, p.ImageFront, p.ImageBack, p.ImageSideway, p.ImageDetails,
+		p.IsArchived, p.ImageFront, p.ImageBack, p.ImageSideway, p.ImageDetails,
 	).Scan(&costumeId); err != nil {
 		return 0, err
 	}
@@ -66,7 +63,7 @@ func (q *Queries) updateCostume(ctx context.Context, p costumeUpdateParams) erro
 
 	if _, err := tx.Exec(
 		ctx, costumeClothesUpdate, p.Name, p.Description, p.IsDecor,
-		p.IsArchived, p.Size, p.ImageFront, p.ImageBack, p.ImageSideway, p.ImageDetails,
+		p.IsArchived, p.ImageFront, p.ImageBack, p.ImageSideway, p.ImageDetails,
 	); err != nil {
 		return err
 	}
@@ -103,7 +100,7 @@ func (q *Queries) selectCostumesWithLimitOffset(ctx context.Context, limit, offs
 		var c costumeReturn
 
 		if err := rows.Scan(
-			&c.Id, &c.Name, &c.Size, &c.Description, &c.ImageFront, &c.ImageBack,
+			&c.Id, &c.Name, &c.Description, &c.ImageFront, &c.ImageBack,
 			&c.ImageSideway, &c.ImageDetails, c.IsDecor, &c.IsArchived, &c.Clothes,
 		); err != nil {
 			return nil, err

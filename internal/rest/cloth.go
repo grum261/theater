@@ -8,8 +8,8 @@ import (
 )
 
 type ClothService interface {
-	Create(ctx context.Context, name, location, designer, condition string, typeId int, colors, materials []int) (models.Cloth, error)
-	Update(ctx context.Context, id, typeId int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error)
+	Create(ctx context.Context, name, location, designer, condition string, typeId, size int, colors, materials []int) (models.Cloth, error)
+	Update(ctx context.Context, id, typeId, size int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error)
 	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.Cloth, error)
 	Delete(ctx context.Context, id int) error
 }
@@ -30,6 +30,7 @@ type ClothCreateUpdateRequest struct {
 	Location  string `json:"location"`
 	Designer  string `json:"designer"`
 	Condition string `json:"condition"`
+	Size      int    `json:"size"`
 	Colors    []int  `json:"colors"`
 	Materials []int  `json:"materials"`
 }
@@ -41,6 +42,7 @@ type ClothResponse struct {
 	Location  string   `json:"location"`
 	Designer  string   `json:"designer"`
 	Condition string   `json:"condition"`
+	Size      int      `json:"size"`
 	Colors    []string `json:"colors"`
 	Materials []string `json:"materials"`
 }
@@ -59,7 +61,7 @@ func (ch *ClothHandler) create(c *fiber.Ctx) error {
 		return respondUnprocessableErr(c, err)
 	}
 
-	res, err := ch.svc.Create(c.Context(), req.Name, req.Location, req.Designer, req.Condition, req.TypeId, req.Colors, req.Materials)
+	res, err := ch.svc.Create(c.Context(), req.Name, req.Location, req.Designer, req.Condition, req.TypeId, req.Size, req.Colors, req.Materials)
 	if err != nil {
 		return respondInternalErr(c, err)
 	}
@@ -71,6 +73,7 @@ func (ch *ClothHandler) create(c *fiber.Ctx) error {
 		Location:  res.Location,
 		Designer:  res.Designer,
 		Condition: res.Condition,
+		Size:      res.Size,
 		Colors:    res.Colors,
 		Materials: res.Materials,
 	})
@@ -88,7 +91,7 @@ func (ch *ClothHandler) update(c *fiber.Ctx) error {
 		return respondUnprocessableErr(c, err)
 	}
 
-	res, err := ch.svc.Update(c.Context(), id, req.TypeId, req.Name, req.Location, req.Designer, req.Condition, req.Colors, req.Materials)
+	res, err := ch.svc.Update(c.Context(), id, req.TypeId, req.Size, req.Name, req.Location, req.Designer, req.Condition, req.Colors, req.Materials)
 	if err != nil {
 		return respondInternalErr(c, err)
 	}
@@ -100,6 +103,7 @@ func (ch *ClothHandler) update(c *fiber.Ctx) error {
 		Location:  res.Location,
 		Designer:  res.Designer,
 		Condition: res.Condition,
+		Size:      res.Size,
 		Colors:    res.Colors,
 		Materials: res.Materials,
 	})
@@ -145,6 +149,7 @@ func (ch *ClothHandler) getWithLimitOffset(c *fiber.Ctx) error {
 			Location:  c.Location,
 			Designer:  c.Designer,
 			Condition: c.Condition,
+			Size:      c.Size,
 			Colors:    c.Colors,
 			Materials: c.Materials,
 		})
