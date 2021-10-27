@@ -76,7 +76,7 @@ func (ch *CostumeHandler) registerRoutes(r fiber.Router) {
 	r.Put("/:id", ch.update)
 	r.Delete("/:id", ch.delete)
 	r.Put("/write_offs/:id", ch.writeOff)
-	r.Get("/:page", ch.getWithLimitOffset)
+	r.Get("/pages/:page", ch.getWithLimitOffset)
 }
 
 func (ch *CostumeHandler) writeOff(c *fiber.Ctx) error {

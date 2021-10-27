@@ -52,7 +52,7 @@ const (
 	INNER JOIN colors c ON cc.color_id = c.id
 	INNER JOIN clothes_materials cm ON cl.id = cm.cloth_id
 	INNER JOIN materials m ON cm.material_id = m.id
-	INNER JOIN costumes_cloths ccl ON cl.id = ccl.cloth_id
+	INNER JOIN costumes_clothes ccl ON cl.id = ccl.cloth_id
 	WHERE ccl.costume_id = $1
 	GROUP BY cl.id, ct.name`
 	selectClothesById = `

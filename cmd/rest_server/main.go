@@ -45,11 +45,11 @@ func main() {
 		IdleTimeout:  time.Second,
 	})
 
-	h.RegisterRoutes(app.Group("/api/v1"))
+	app.Use(logger.New())
 
 	app.Static("/", "./assets/swagger-ui")
 
-	app.Use(logger.New())
+	h.RegisterRoutes(app.Group("/api/v1"))
 
 	log.Fatal(app.Listen(":8000"))
 }
