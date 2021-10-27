@@ -16,14 +16,14 @@ const (
 	costumeDelete = `DELETE FROM costumes WHERE id = $1`
 
 	costumeSelectWithLimitOffset = `
-	SELECT c.id, c.name, c.description, c.image_front, 
-	c.image_back, c.image_sideway, c.image_details
+	SELECT c.id, c.name, coalesce(c.description, ''), coalesce(c.image_front, ''), 
+	coalesce(c.image_back, ''), coalesce(c.image_sideway, ''), coalesce(c.image_details, '')
 	FROM costumes c
 	ORDER BY c.id desc
 	LIMIT $1 OFFSET $2`
 	costumeSelectByPerformanceId = `
-	SELECT c.id, c.name, c.description, c.image_front, 
-	c.image_back, c.image_sideway, c.image_details
+	SELECT c.id, c.name, coalesce(c.description, ''), coalesce(c.image_front, ''), 
+	coalesce(c.image_back, ''), coalesce(c.image_sideway, ''), coalesce(c.image_details, '')
 	FROM costumes c
 	INNER JOIN performance_costumes pc ON c.id = pc.costume_id
 	WHERE pc.performance_id = $1

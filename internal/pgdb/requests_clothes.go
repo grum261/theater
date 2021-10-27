@@ -32,7 +32,7 @@ const (
 	clothDelete = `DELETE FROM clothes WHERE id = $1`
 
 	selectClothesLimitOffset = `
-	SELECT cl.id, cl.name, ct.name, cl.location, cl.designer, cl.condition, cl.size, 
+	SELECT cl.id, cl.name, ct.name, coalesce(cl.location, ''), coalesce(cl.designer, ''), cl.condition, cl.size, 
 	array_agg(c.name), array_agg(m.name), cl.is_decor, cl.is_archived
 	FROM clothes cl
 	INNER JOIN clothes_types ct ON cl.type_id = ct.id
@@ -44,7 +44,7 @@ const (
 	ORDER BY id desc
 	LIMIT $1 OFFSET $2`
 	selectClothesByCostumeId = `
-	SELECT cl.id, cl.name, ct.name, cl.location, cl.designer, cl.condition, cl.size, 
+	SELECT cl.id, cl.name, ct.name, coalesce(cl.location, ''), coalesce(cl.designer, ''), cl.condition, cl.size, 
 	array_agg(c.name), array_agg(m.name), cl.is_decor, cl.is_archived
 	FROM clothes cl
 	INNER JOIN clothes_types ct ON cl.type_id = ct.id
@@ -56,7 +56,7 @@ const (
 	WHERE ccl.costume_id = $1
 	GROUP BY cl.id, ct.name`
 	selectClothesById = `
-	SELECT cl.id, cl.name, ct.name, cl.location, cl.designer, cl.condition, cl.size, 
+	SELECT cl.id, cl.name, ct.name, coalesce(cl.location, ''), coalesce(cl.designer, ''), cl.condition, cl.size, 
 	array_agg(c.name), array_agg(m.name), , cl.is_decor, cl.is_archived
 	FROM clothes cl
 	INNER JOIN clothes_types ct ON cl.type_id = ct.id
