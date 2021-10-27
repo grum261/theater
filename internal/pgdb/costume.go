@@ -28,8 +28,6 @@ func (c *Costume) Create(ctx context.Context, p models.CostumeInsert) (models.Co
 		Name:         p.Name,
 		Description:  p.Description,
 		Clothes:      p.ClothesId,
-		IsDecor:      p.IsDecor,
-		IsArchived:   p.IsArchived,
 		ImageFront:   p.Image.Front,
 		ImageBack:    p.Image.Back,
 		ImageSideway: p.Image.Sideway,
@@ -41,22 +39,24 @@ func (c *Costume) Create(ctx context.Context, p models.CostumeInsert) (models.Co
 
 	_out := models.CostumeReturn{Id: id}
 
-	clothes, err := c.q.WithTx(tx).selectClothesByIdArray(ctx, p.ClothesId)
+	clothes, err := c.q.WithTx(tx).selectClothesByCostumeId(ctx, id)
 	if err != nil {
 		return models.CostumeReturn{}, err
 	}
 
 	for _, c := range clothes {
 		_out.Clothes = append(_out.Clothes, models.Cloth{
-			Id:        c.Id,
-			Name:      c.Name,
-			Type:      c.Type,
-			Location:  c.Location,
-			Designer:  c.Designer,
-			Condition: c.Condition,
-			Size:      c.Size,
-			Colors:    c.Colors,
-			Materials: c.Materials,
+			Id:         c.Id,
+			Name:       c.Name,
+			Type:       c.Type,
+			Location:   c.Location,
+			Designer:   c.Designer,
+			Condition:  c.Condition,
+			Size:       c.Size,
+			IsDecor:    c.IsDecor,
+			IsArchived: c.IsArchived,
+			Colors:     c.Colors,
+			Materials:  c.Materials,
 		})
 	}
 
@@ -69,16 +69,16 @@ func (c *Costume) Create(ctx context.Context, p models.CostumeInsert) (models.Co
 
 func (c *Costume) Update(ctx context.Context, p models.CostumeUpdate) (models.CostumeReturn, error) {
 	err := c.q.updateCostume(ctx, costumeUpdateParams{
-		Id:           p.Id,
-		Name:         p.Name,
-		Description:  p.Description,
-		Clothes:      p.ClothesId,
-		IsDecor:      p.IsDecor,
-		IsArchived:   p.IsArchived,
-		ImageFront:   p.Image.Front,
-		ImageBack:    p.Image.Back,
-		ImageSideway: p.Image.Sideway,
-		ImageDetails: p.Image.Details,
+		Id: p.Id,
+		costumeInsertParams: costumeInsertParams{
+			Name:         p.Name,
+			Description:  p.Description,
+			Clothes:      p.ClothesId,
+			ImageFront:   p.Image.Front,
+			ImageBack:    p.Image.Back,
+			ImageSideway: p.Image.Sideway,
+			ImageDetails: p.Image.Details,
+		},
 	})
 	if err != nil {
 		return models.CostumeReturn{}, err
@@ -86,22 +86,24 @@ func (c *Costume) Update(ctx context.Context, p models.CostumeUpdate) (models.Co
 
 	_out := models.CostumeReturn{Id: p.Id}
 
-	clothes, err := c.q.selectClothesByIdArray(ctx, p.ClothesId)
+	clothes, err := c.q.selectClothesByCostumeId(ctx, p.Id)
 	if err != nil {
 		return models.CostumeReturn{}, err
 	}
 
 	for _, c := range clothes {
 		_out.Clothes = append(_out.Clothes, models.Cloth{
-			Id:        c.Id,
-			Name:      c.Name,
-			Type:      c.Type,
-			Location:  c.Location,
-			Designer:  c.Designer,
-			Condition: c.Condition,
-			Size:      c.Size,
-			Colors:    c.Colors,
-			Materials: c.Materials,
+			Id:         c.Id,
+			Name:       c.Name,
+			Type:       c.Type,
+			Location:   c.Location,
+			Designer:   c.Designer,
+			Condition:  c.Condition,
+			Size:       c.Size,
+			IsDecor:    c.IsDecor,
+			IsArchived: c.IsArchived,
+			Colors:     c.Colors,
+			Materials:  c.Materials,
 		})
 	}
 
@@ -125,8 +127,6 @@ func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]
 			Id:          co.Id,
 			Name:        co.Name,
 			Description: co.Description,
-			IsDecor:     co.IsDecor,
-			IsArchived:  co.IsArchived,
 			Image: models.Image{
 				Front:   co.ImageFront,
 				Back:    co.ImageBack,
@@ -135,22 +135,24 @@ func (c *Costume) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]
 			},
 		}
 
-		clothes, err := c.q.selectClothesByIdArray(ctx, co.Clothes)
+		clothes, err := c.q.selectClothesByCostumeId(ctx, co.Id)
 		if err != nil {
 			return nil, err
 		}
 
 		for _, cl := range clothes {
 			cos.Clothes = append(cos.Clothes, models.Cloth{
-				Id:        cl.Id,
-				Name:      cl.Name,
-				Type:      cl.Type,
-				Location:  cl.Location,
-				Designer:  cl.Designer,
-				Condition: cl.Condition,
-				Size:      cl.Size,
-				Colors:    cl.Colors,
-				Materials: cl.Materials,
+				Id:         cl.Id,
+				Name:       cl.Name,
+				Type:       cl.Type,
+				Location:   cl.Location,
+				Designer:   cl.Designer,
+				Condition:  cl.Condition,
+				Size:       cl.Size,
+				IsDecor:    cl.IsDecor,
+				IsArchived: cl.IsArchived,
+				Colors:     cl.Colors,
+				Materials:  cl.Materials,
 			})
 		}
 

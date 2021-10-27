@@ -8,8 +8,8 @@ import (
 )
 
 type ClothService interface {
-	Create(ctx context.Context, name, location, designer, condition string, typeId, size int, colors, materials []int) (models.Cloth, error)
-	Update(ctx context.Context, id, typeId, size int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error)
+	Create(ctx context.Context, p models.ClothInsertUpdate) (models.Cloth, error)
+	Update(ctx context.Context, p models.ClothInsertUpdate) (models.Cloth, error)
 	GetWithLimitOffset(ctx context.Context, limit, offset int) ([]models.Cloth, error)
 	Delete(ctx context.Context, id int) error
 }
@@ -25,26 +25,30 @@ func newClothHandler(svc ClothService) *ClothHandler {
 }
 
 type ClothCreateUpdateRequest struct {
-	Name      string `json:"name"`
-	TypeId    int    `json:"typeId"`
-	Location  string `json:"location"`
-	Designer  string `json:"designer"`
-	Condition string `json:"condition"`
-	Size      int    `json:"size"`
-	Colors    []int  `json:"colors"`
-	Materials []int  `json:"materials"`
+	Name       string `json:"name"`
+	TypeId     int    `json:"typeId"`
+	Location   string `json:"location"`
+	Designer   string `json:"designer"`
+	Condition  string `json:"condition"`
+	Size       int    `json:"size"`
+	IsDecor    bool   `json:"isDecor"`
+	IsArchived bool   `json:"isArchived"`
+	Colors     []int  `json:"colors"`
+	Materials  []int  `json:"materials"`
 }
 
 type ClothResponse struct {
-	Id        int      `json:"id"`
-	Name      string   `json:"name"`
-	Type      string   `json:"type"`
-	Location  string   `json:"location"`
-	Designer  string   `json:"designer"`
-	Condition string   `json:"condition"`
-	Size      int      `json:"size"`
-	Colors    []string `json:"colors"`
-	Materials []string `json:"materials"`
+	Id         int      `json:"id"`
+	Name       string   `json:"name"`
+	Type       string   `json:"type"`
+	Location   string   `json:"location"`
+	Designer   string   `json:"designer"`
+	Condition  string   `json:"condition"`
+	Size       int      `json:"size"`
+	IsDecor    bool     `json:"isDecor"`
+	IsArchived bool     `json:"isArchived"`
+	Colors     []string `json:"colors"`
+	Materials  []string `json:"materials"`
 }
 
 func (ch *ClothHandler) registerRoutes(r fiber.Router) {
@@ -61,7 +65,18 @@ func (ch *ClothHandler) create(c *fiber.Ctx) error {
 		return respondUnprocessableErr(c, err)
 	}
 
-	res, err := ch.svc.Create(c.Context(), req.Name, req.Location, req.Designer, req.Condition, req.TypeId, req.Size, req.Colors, req.Materials)
+	res, err := ch.svc.Create(c.Context(), models.ClothInsertUpdate{
+		Name:       req.Name,
+		TypeId:     req.TypeId,
+		Location:   req.Location,
+		Designer:   req.Designer,
+		Condition:  req.Condition,
+		Size:       req.Size,
+		IsDecor:    req.IsDecor,
+		IsArchived: req.IsArchived,
+		Colors:     req.Colors,
+		Materials:  req.Materials,
+	})
 	if err != nil {
 		return respondInternalErr(c, err)
 	}
@@ -91,7 +106,19 @@ func (ch *ClothHandler) update(c *fiber.Ctx) error {
 		return respondUnprocessableErr(c, err)
 	}
 
-	res, err := ch.svc.Update(c.Context(), id, req.TypeId, req.Size, req.Name, req.Location, req.Designer, req.Condition, req.Colors, req.Materials)
+	res, err := ch.svc.Update(c.Context(), models.ClothInsertUpdate{
+		Id:         id,
+		Name:       req.Name,
+		TypeId:     req.TypeId,
+		Location:   req.Location,
+		Designer:   req.Designer,
+		Condition:  req.Condition,
+		Size:       req.Size,
+		IsDecor:    req.IsDecor,
+		IsArchived: req.IsArchived,
+		Colors:     req.Colors,
+		Materials:  req.Materials,
+	})
 	if err != nil {
 		return respondInternalErr(c, err)
 	}

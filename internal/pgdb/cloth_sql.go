@@ -5,34 +5,30 @@ import (
 )
 
 type clothInsertParams struct {
-	Name              string
-	TypeId            int
-	Designer          string
-	Location          string
-	Condition         string
-	Size              int
-	Colors, Materials []int
+	Name                string
+	TypeId              int
+	Designer            string
+	Location            string
+	Condition           string
+	Size                int
+	IsDecor, IsArchived bool
+	Colors, Materials   []int
 }
 
 type clothUpdateParams struct {
-	Id                int
-	Name              string
-	TypeId            int
-	Location          string
-	Designer          string
-	Condition         string
-	Size              int
-	Colors, Materials []int
+	Id int
+	clothInsertParams
 }
 
 type clothReturn struct {
-	Id                int
-	Name, Type        string
-	Location          string
-	Designer          string
-	Condition         string
-	Size              int
-	Colors, Materials []string
+	Id                  int
+	Name, Type          string
+	Location            string
+	Designer            string
+	Condition           string
+	Size                int
+	IsDecor, IsArchived bool
+	Colors, Materials   []string
 }
 
 func (q *Queries) insertCloth(ctx context.Context, p clothInsertParams) (clothReturn, error) {
@@ -47,7 +43,11 @@ func (q *Queries) insertCloth(ctx context.Context, p clothInsertParams) (clothRe
 	}
 	defer tx.Rollback(ctx)
 
-	if err := tx.QueryRow(ctx, clothInsert, p.Name, p.TypeId, p.Location, p.Designer, p.Condition, p.Size).Scan(&clothId, &typeName); err != nil {
+	if err := tx.QueryRow(
+		ctx, clothInsert, p.Name, p.TypeId,
+		p.Location, p.Designer, p.Condition, p.Size,
+		p.IsDecor, p.IsArchived,
+	).Scan(&clothId, &typeName); err != nil {
 		return clothReturn{}, err
 	}
 
@@ -111,7 +111,10 @@ func (q *Queries) updateCloth(ctx context.Context, p clothUpdateParams) (clothRe
 	}
 	defer tx.Rollback(ctx)
 
-	if err := tx.QueryRow(ctx, clothUpdate, p.Id, p.Name, p.TypeId, p.Location, p.Designer, p.Condition, p.Size).Scan(&typeName); err != nil {
+	if err := tx.QueryRow(
+		ctx, clothUpdate, p.Id, p.Name, p.TypeId, p.Location,
+		p.Designer, p.Condition, p.Size, p.IsDecor, p.IsArchived,
+	).Scan(&typeName); err != nil {
 		return clothReturn{}, err
 	}
 
@@ -186,7 +189,9 @@ func (q *Queries) selectWithLimitOffset(ctx context.Context, limit, offset int) 
 	for rows.Next() {
 		var c clothReturn
 
-		if err := rows.Scan(&c.Id, &c.Name, &c.Type, &c.Location, &c.Designer, &c.Condition, &c.Size, &c.Colors, &c.Materials); err != nil {
+		if err := rows.Scan(&c.Id, &c.Name, &c.Type, &c.Location, &c.Designer, &c.Condition,
+			&c.Size, &c.Colors, &c.Materials, &c.IsDecor, &c.IsArchived,
+		); err != nil {
 			return nil, err
 		}
 
@@ -196,8 +201,8 @@ func (q *Queries) selectWithLimitOffset(ctx context.Context, limit, offset int) 
 	return r, nil
 }
 
-func (q *Queries) selectClothesByIdArray(ctx context.Context, ids []int) ([]clothReturn, error) {
-	rows, err := q.db.Query(ctx, selectClothesByIdArray, ids)
+func (q *Queries) selectClothesByCostumeId(ctx context.Context, costumeId int) ([]clothReturn, error) {
+	rows, err := q.db.Query(ctx, selectClothesByCostumeId, costumeId)
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +213,10 @@ func (q *Queries) selectClothesByIdArray(ctx context.Context, ids []int) ([]clot
 	for rows.Next() {
 		var c clothReturn
 
-		if err := rows.Scan(&c.Id, &c.Name, &c.Type, &c.Location, &c.Designer, &c.Condition, &c.Size, &c.Colors, &c.Materials); err != nil {
+		if err := rows.Scan(
+			&c.Id, &c.Name, &c.Type, &c.Location, &c.Designer,
+			&c.Condition, &c.Size, &c.Colors, &c.Materials, &c.IsDecor, &c.IsArchived,
+		); err != nil {
 			return nil, err
 		}
 

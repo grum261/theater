@@ -17,59 +17,68 @@ func newCloth(db *pgxpool.Pool) *Cloth {
 	}
 }
 
-func (c *Cloth) Create(ctx context.Context, name, location, designer, condition string, typeId, size int, colors, materials []int) (models.Cloth, error) {
+func (c *Cloth) Create(ctx context.Context, p models.ClothInsertUpdate) (models.Cloth, error) {
 	cl, err := c.q.insertCloth(ctx, clothInsertParams{
-		Name:      name,
-		TypeId:    typeId,
-		Location:  location,
-		Designer:  designer,
-		Condition: condition,
-		Size:      size,
-		Colors:    colors,
-		Materials: materials,
+		Name:       p.Name,
+		TypeId:     p.TypeId,
+		Location:   p.Location,
+		Designer:   p.Designer,
+		Condition:  p.Condition,
+		Size:       p.Size,
+		IsDecor:    p.IsDecor,
+		IsArchived: p.IsArchived,
+		Colors:     p.Colors,
+		Materials:  p.Materials,
 	})
 	if err != nil {
 		return models.Cloth{}, err
 	}
 
 	return models.Cloth{
-		Id:        cl.Id,
-		Name:      name,
-		Type:      cl.Type,
-		Location:  location,
-		Designer:  designer,
-		Condition: condition,
-		Colors:    cl.Colors,
-		Materials: cl.Materials,
+		Id:         cl.Id,
+		Name:       p.Name,
+		Type:       cl.Type,
+		Location:   p.Location,
+		Designer:   p.Designer,
+		Condition:  p.Condition,
+		IsDecor:    p.IsDecor,
+		IsArchived: p.IsArchived,
+		Colors:     cl.Colors,
+		Materials:  cl.Materials,
 	}, nil
 }
 
-func (c *Cloth) Update(ctx context.Context, id, typeId, size int, name, location, designer, condition string, colors, materials []int) (models.Cloth, error) {
+func (c *Cloth) Update(ctx context.Context, p models.ClothInsertUpdate) (models.Cloth, error) {
 	cl, err := c.q.updateCloth(ctx, clothUpdateParams{
-		Id:        id,
-		Name:      name,
-		TypeId:    typeId,
-		Location:  location,
-		Designer:  designer,
-		Condition: condition,
-		Size:      size,
-		Colors:    colors,
-		Materials: materials,
+		Id: p.Id,
+		clothInsertParams: clothInsertParams{
+			Name:       p.Name,
+			TypeId:     p.TypeId,
+			Location:   p.Location,
+			Designer:   p.Designer,
+			Condition:  p.Condition,
+			Size:       p.Size,
+			IsDecor:    p.IsDecor,
+			IsArchived: p.IsArchived,
+			Colors:     p.Colors,
+			Materials:  p.Materials,
+		},
 	})
 	if err != nil {
 		return models.Cloth{}, err
 	}
 
 	return models.Cloth{
-		Id:        id,
-		Name:      name,
-		Type:      cl.Type,
-		Location:  location,
-		Designer:  designer,
-		Condition: condition,
-		Size:      size,
-		Colors:    cl.Colors,
-		Materials: cl.Materials,
+		Id:         cl.Id,
+		Name:       p.Name,
+		Type:       cl.Type,
+		Location:   p.Location,
+		Designer:   p.Designer,
+		Condition:  p.Condition,
+		IsDecor:    p.IsDecor,
+		IsArchived: p.IsArchived,
+		Colors:     cl.Colors,
+		Materials:  cl.Materials,
 	}, nil
 }
 
@@ -87,15 +96,17 @@ func (c *Cloth) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]mo
 
 	for _, c := range clothes {
 		_out = append(_out, models.Cloth{
-			Id:        c.Id,
-			Name:      c.Name,
-			Type:      c.Type,
-			Location:  c.Location,
-			Designer:  c.Designer,
-			Condition: c.Condition,
-			Size:      c.Size,
-			Colors:    c.Colors,
-			Materials: c.Materials,
+			Id:         c.Id,
+			Name:       c.Name,
+			Type:       c.Type,
+			Location:   c.Location,
+			Designer:   c.Designer,
+			Condition:  c.Condition,
+			Size:       c.Size,
+			IsDecor:    c.IsDecor,
+			IsArchived: c.IsArchived,
+			Colors:     c.Colors,
+			Materials:  c.Materials,
 		})
 	}
 

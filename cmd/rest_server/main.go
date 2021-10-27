@@ -36,8 +36,8 @@ func main() {
 	defer db.Close()
 
 	s := pgdb.NewStore(db)
-	svc := service.NewServices(s.Tag, s.Cloth, s.Costume)
-	h := rest.NewHandlers(svc.Tag, svc.Cloth, svc.Costume)
+	svc := service.NewServices(s.Tag, s.Cloth, s.Costume, s.Performance)
+	h := rest.NewHandlers(svc.Tag, svc.Cloth, svc.Costume, svc.Performance)
 
 	app := fiber.New(fiber.Config{
 		ReadTimeout:  time.Second,

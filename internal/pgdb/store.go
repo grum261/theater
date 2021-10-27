@@ -6,6 +6,7 @@ type Store struct {
 	*Tag
 	*Cloth
 	*Costume
+	*Performance
 }
 
 func NewStore(db *pgxpool.Pool) *Store {
@@ -13,5 +14,6 @@ func NewStore(db *pgxpool.Pool) *Store {
 		newTag(db),
 		newCloth(db),
 		newCostume(db),
+		newPerformance(db),
 	}
 }

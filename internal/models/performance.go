@@ -7,8 +7,17 @@ type Performance struct {
 	Name       string
 	Location   string
 	StartingAt time.Time
-	Duration   time.Duration
+	Duration   int
 	Costumes   []Costume
+}
+
+type PerformanceInsertUpdate struct {
+	Id         int
+	Name       string
+	Location   string
+	StartingAt time.Time
+	Duration   int
+	Costumes   []int
 }
 
 type PerformanceReturn struct {
