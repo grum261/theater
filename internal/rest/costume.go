@@ -27,11 +27,17 @@ func newCostumeHandler(svc CostumeService) *CostumeHandler {
 
 type CostumeCreateUpdateRequest struct {
 	ImageRequestResponse `json:"images,omitempty"`
-	Name                 string `json:"name"`
-	Description          string `json:"description"`
-	ClothesId            []int  `json:"clothes"`
-	IsDecor              bool   `json:"isDecor"`
-	IsArchived           bool   `json:"isArchived"`
+	Name                 string   `json:"name"`
+	Description          string   `json:"description"`
+	ClothesId            []int    `json:"clothes"`
+	Size                 string   `json:"size"`
+	Designer             string   `json:"designer"`
+	Location             string   `json:"location"`
+	Tags                 []string `json:"tags"`
+	Condition            string   `json:"condition"`
+	IsDecor              bool     `json:"isDecor"`
+	IsArchived           bool     `json:"isArchived"`
+	Comment              string   `json:"comment"`
 }
 
 type ImageRequestResponse struct {
@@ -43,23 +49,18 @@ type ImageRequestResponse struct {
 
 type CostumeResponse struct {
 	*ImageRequestResponse `json:"images,omitempty"`
-	CostumeTags           `json:"tags"`
-	Name                  string         `json:"name"`
-	Description           string         `json:"description,omitempty"`
-	Clothes               []CostumeCloth `json:"clothes"`
-	Id                    int            `json:"id"`
-}
-
-type CostumeCloth struct {
-	Id         int    `json:"id"`
-	Name       string `json:"name"`
-	Type       string `json:"type"`
-	Location   string `json:"location"`
-	Designer   string `json:"designer"`
-	Condition  string `json:"condition"`
-	Size       int    `json:"size"`
-	IsDecor    bool   `json:"isDecor"`
-	IsArchived bool   `json:"isArchived"`
+	Name                  string          `json:"name"`
+	Description           string          `json:"description,omitempty"`
+	Clothes               []ClothResponse `json:"clothes"`
+	Id                    int             `json:"id"`
+	Size                  string          `json:"size"`
+	Designer              string          `json:"designer"`
+	Location              string          `json:"location"`
+	Tags                  []string        `json:"tags"`
+	Condition             string          `json:"condition"`
+	IsDecor               bool            `json:"isDecor"`
+	IsArchived            bool            `json:"isArchived"`
+	Comment               string          `json:"comment"`
 }
 
 type CostumeTags struct {
@@ -114,29 +115,26 @@ func (ch *CostumeHandler) getWithLimitOffset(c *fiber.Ctx) error {
 
 	for _, c := range costumes {
 		cos := CostumeResponse{
-			ImageRequestResponse: &ImageRequestResponse{
-				Front:   c.Image.Front,
-				Back:    c.Image.Back,
-				Sideway: c.Image.Sideway,
-				Details: c.Image.Details,
-			},
-			Name:        c.Name,
-			Description: c.Description,
-			Id:          c.Id,
+			ImageRequestResponse: &ImageRequestResponse{Front: c.Image.Front, Back: c.Image.Back, Sideway: c.Image.Sideway, Details: c.Image.Details},
+			Name:                 c.Name,
+			Description:          c.Description,
+			Id:                   c.Id,
+			Size:                 c.Size,
+			Designer:             c.Designer,
+			Location:             c.Location,
+			Tags:                 c.Tags,
+			Condition:            c.Condition,
+			IsDecor:              c.IsDecor,
+			IsArchived:           c.IsArchived,
+			Comment:              c.Comment,
 		}
 
 		for _, cl := range c.Clothes {
-			cos.Clothes = append(cos.Clothes, CostumeCloth{
-				Id:        cl.Id,
-				Name:      cl.Name,
-				Type:      cl.Type,
-				Location:  cl.Location,
-				Condition: cl.Condition,
-				Size:      cl.Size,
+			cos.Clothes = append(cos.Clothes, ClothResponse{
+				Id:   cl.Id,
+				Name: cl.Name,
+				Type: cl.Type,
 			})
-
-			cos.CostumeTags.Materials = cl.Materials
-			cos.CostumeTags.Colors = cl.Colors
 		}
 
 		res = append(res, cos)
@@ -155,45 +153,42 @@ func (ch *CostumeHandler) create(c *fiber.Ctx) error {
 	costume, err := ch.svc.Create(c.Context(), models.CostumeInsert{
 		Name:        req.Name,
 		Description: req.Description,
+		Designer:    req.Designer,
+		Size:        req.Size,
+		Location:    req.Location,
+		Condition:   req.Condition,
 		ClothesId:   req.ClothesId,
-		Image: models.Image{
-			Front:   req.ImageRequestResponse.Front,
-			Back:    req.ImageRequestResponse.Back,
-			Sideway: req.ImageRequestResponse.Sideway,
-			Details: req.ImageRequestResponse.Details,
-		},
+		Tags:        req.Tags,
+		IsDecor:     req.IsDecor,
+		IsArchived:  req.IsArchived,
+		Comment:     req.Comment,
+		Image:       models.Image{Front: req.ImageRequestResponse.Front, Back: req.ImageRequestResponse.Back, Sideway: req.ImageRequestResponse.Sideway, Details: req.ImageRequestResponse.Details},
 	})
 	if err != nil {
 		return respondInternalErr(c, err)
 	}
 
 	res := CostumeResponse{
-		ImageRequestResponse: &ImageRequestResponse{
-			Front:   req.ImageRequestResponse.Front,
-			Back:    req.ImageRequestResponse.Back,
-			Sideway: req.ImageRequestResponse.Sideway,
-			Details: req.ImageRequestResponse.Details,
-		},
-		Name:        req.Name,
-		Description: req.Description,
-		Id:          costume.Id,
+		ImageRequestResponse: &ImageRequestResponse{Front: req.ImageRequestResponse.Front, Back: req.ImageRequestResponse.Back, Sideway: req.ImageRequestResponse.Sideway, Details: req.ImageRequestResponse.Details},
+		Name:                 req.Name,
+		Description:          req.Description,
+		Id:                   costume.Id,
+		Size:                 req.Size,
+		Designer:             req.Designer,
+		Location:             req.Location,
+		Tags:                 req.Tags,
+		Condition:            req.Condition,
+		IsDecor:              req.IsDecor,
+		IsArchived:           req.IsArchived,
+		Comment:              req.Comment,
 	}
 
 	for _, c := range costume.Clothes {
-		res.Clothes = append(res.Clothes, CostumeCloth{
-			Id:         c.Id,
-			Name:       c.Name,
-			Type:       c.Type,
-			Location:   c.Location,
-			Designer:   c.Designer,
-			Condition:  c.Condition,
-			Size:       c.Size,
-			IsDecor:    c.IsDecor,
-			IsArchived: c.IsArchived,
+		res.Clothes = append(res.Clothes, ClothResponse{
+			Id:   c.Id,
+			Name: c.Name,
+			Type: c.Type,
 		})
-
-		res.CostumeTags.Colors = append(res.CostumeTags.Colors, c.Colors...)
-		res.CostumeTags.Materials = append(res.CostumeTags.Materials, c.Materials...)
 	}
 
 	return respondOK(c, res)
@@ -212,15 +207,20 @@ func (ch *CostumeHandler) update(c *fiber.Ctx) error {
 	}
 
 	costume, err := ch.svc.Update(c.Context(), models.CostumeUpdate{
-		Id:          id,
-		Name:        req.Name,
-		Description: req.Description,
-		ClothesId:   req.ClothesId,
-		Image: models.Image{
-			Front:   req.ImageRequestResponse.Front,
-			Back:    req.ImageRequestResponse.Back,
-			Sideway: req.ImageRequestResponse.Sideway,
-			Details: req.ImageRequestResponse.Details,
+		Id: id,
+		CostumeInsert: models.CostumeInsert{
+			Comment:     req.Comment,
+			Name:        req.Name,
+			Description: req.Description,
+			Designer:    req.Designer,
+			Size:        req.Size,
+			Location:    req.Location,
+			Condition:   req.Condition,
+			ClothesId:   req.ClothesId,
+			Tags:        req.Tags,
+			IsDecor:     req.IsDecor,
+			IsArchived:  req.IsArchived,
+			Image:       models.Image{Front: req.ImageRequestResponse.Front, Back: req.ImageRequestResponse.Back, Sideway: req.ImageRequestResponse.Sideway, Details: req.ImageRequestResponse.Details},
 		},
 	})
 	if err != nil {
@@ -228,32 +228,26 @@ func (ch *CostumeHandler) update(c *fiber.Ctx) error {
 	}
 
 	res := CostumeResponse{
-		ImageRequestResponse: &ImageRequestResponse{
-			Front:   req.ImageRequestResponse.Front,
-			Back:    req.ImageRequestResponse.Back,
-			Sideway: req.ImageRequestResponse.Sideway,
-			Details: req.ImageRequestResponse.Details,
-		},
-		Name:        req.Name,
-		Description: req.Description,
-		Id:          id,
+		ImageRequestResponse: &ImageRequestResponse{Front: req.ImageRequestResponse.Front, Back: req.ImageRequestResponse.Back, Sideway: req.ImageRequestResponse.Sideway, Details: req.ImageRequestResponse.Details},
+		Name:                 req.Name,
+		Description:          req.Description,
+		Id:                   id,
+		Size:                 req.Size,
+		Designer:             req.Designer,
+		Location:             req.Location,
+		Tags:                 req.Tags,
+		Condition:            req.Condition,
+		IsDecor:              req.IsDecor,
+		IsArchived:           req.IsArchived,
+		Comment:              req.Comment,
 	}
 
 	for _, c := range costume.Clothes {
-		res.Clothes = append(res.Clothes, CostumeCloth{
-			Id:         c.Id,
-			Name:       c.Name,
-			Type:       c.Type,
-			Location:   c.Location,
-			Designer:   c.Designer,
-			Condition:  c.Condition,
-			Size:       c.Size,
-			IsDecor:    c.IsDecor,
-			IsArchived: c.IsArchived,
+		res.Clothes = append(res.Clothes, ClothResponse{
+			Id:   c.Id,
+			Name: c.Name,
+			Type: c.Type,
 		})
-
-		res.CostumeTags.Colors = append(res.CostumeTags.Colors, c.Colors...)
-		res.CostumeTags.Materials = append(res.CostumeTags.Materials, c.Materials...)
 	}
 
 	return respondOK(c, res)

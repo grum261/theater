@@ -6,23 +6,27 @@ type CostumeReturn struct {
 }
 
 type Costume struct {
-	Id                int
-	Name, Description string
-	Clothes           []Cloth
 	Image
+	Id                                                     int
+	Name, Description, Designer, Size, Location, Condition string
+	Clothes                                                []Cloth
+	Tags                                                   []string
+	IsDecor, IsArchived                                    bool
+	Comment                                                string
 }
 
 type CostumeInsert struct {
-	Name, Description string
-	ClothesId         []int
+	Name, Description, Designer, Size, Location, Condition string
+	ClothesId                                              []int
+	Tags                                                   []string
+	IsDecor, IsArchived                                    bool
+	Comment                                                string
 	Image
 }
 
 type CostumeUpdate struct {
-	Id                int
-	Name, Description string
-	ClothesId         []int
-	Image
+	Id int
+	CostumeInsert
 }
 
 type Image struct {

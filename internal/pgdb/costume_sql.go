@@ -5,9 +5,10 @@ import (
 )
 
 type costumeInsertParams struct {
-	Name, Description                                 string
-	Clothes                                           []int
-	ImageFront, ImageBack, ImageSideway, ImageDetails string
+	Name, Description, Designer, Condition, Size, Location string
+	Clothes                                                []int
+	ImageFront, ImageBack, ImageSideway, ImageDetails      string
+	IsDecor, IsArchived                                    bool
 }
 
 type costumeUpdateParams struct {
@@ -16,10 +17,11 @@ type costumeUpdateParams struct {
 }
 
 type costumeReturn struct {
-	Id                                                int
-	Name, Description                                 string
-	ImageFront, ImageBack, ImageSideway, ImageDetails string
-	Clothes                                           []int
+	Id                                                     int
+	Name, Description, Designer, Condition, Size, Location string
+	ImageFront, ImageBack, ImageSideway, ImageDetails      string
+	IsDecor, IsArchived                                    bool
+	Tags                                                   []string
 }
 
 func (q *Queries) insertCostume(ctx context.Context, p costumeInsertParams) (int, error) {
@@ -32,7 +34,8 @@ func (q *Queries) insertCostume(ctx context.Context, p costumeInsertParams) (int
 	defer tx.Rollback(ctx)
 
 	if err := tx.QueryRow(
-		ctx, costumeInsert, p.Name, p.Description, p.ImageFront, p.ImageBack, p.ImageSideway, p.ImageDetails,
+		ctx, costumeInsert, p.Name, p.Description, p.ImageFront, p.ImageBack, p.ImageSideway,
+		p.ImageDetails, p.Designer, p.Location, p.Size, p.Condition, p.IsDecor, p.IsArchived,
 	).Scan(&costumeId); err != nil {
 		return 0, err
 	}
@@ -56,7 +59,8 @@ func (q *Queries) updateCostume(ctx context.Context, p costumeUpdateParams) erro
 	defer tx.Rollback(ctx)
 
 	if _, err := tx.Exec(
-		ctx, costumeClothesUpdate, p.Name, p.Description, p.ImageFront, p.ImageBack, p.ImageSideway, p.ImageDetails,
+		ctx, costumeClothesUpdate, p.Name, p.Description, p.ImageFront, p.ImageBack, p.ImageSideway,
+		p.ImageDetails, p.ImageDetails, p.Designer, p.Location, p.Size, p.Condition, p.IsDecor, p.IsArchived,
 	); err != nil {
 		return err
 	}
@@ -93,8 +97,8 @@ func (q *Queries) selectCostumesWithLimitOffset(ctx context.Context, limit, offs
 		var c costumeReturn
 
 		if err := rows.Scan(
-			&c.Id, &c.Name, &c.Description, &c.ImageFront, &c.ImageBack,
-			&c.ImageSideway, &c.ImageDetails,
+			&c.Id, &c.Name, &c.Description, &c.ImageFront, &c.ImageBack, &c.ImageSideway,
+			&c.ImageDetails, &c.Designer, &c.Location, &c.Size, &c.Condition, &c.IsDecor, &c.IsArchived,
 		); err != nil {
 			return nil, err
 		}
@@ -125,7 +129,10 @@ func (q *Queries) selectCostumesAndClothesByPerformance(ctx context.Context, per
 	for rows.Next() {
 		var c costumeReturn
 
-		if err := rows.Scan(&c.Id, &c.Name, &c.Description, &c.ImageFront, &c.ImageBack, &c.ImageSideway, &c.ImageDetails); err != nil {
+		if err := rows.Scan(
+			&c.Id, &c.Name, &c.Description, &c.ImageFront, &c.ImageBack, &c.ImageSideway,
+			&c.ImageDetails, &c.Designer, &c.Location, &c.Size, &c.Condition, &c.IsDecor, &c.IsArchived,
+		); err != nil {
 			return nil, err
 		}
 

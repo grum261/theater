@@ -86,16 +86,10 @@ func (ph *PerformanceHandler) create(c *fiber.Ctx) error {
 		}
 
 		for _, cl := range cos.Clothes {
-			co.Clothes = append(co.Clothes, CostumeCloth{
-				Id:         cl.Id,
-				Name:       cl.Name,
-				Type:       cl.Type,
-				Location:   cl.Location,
-				Designer:   cl.Designer,
-				Condition:  cl.Condition,
-				Size:       cl.Size,
-				IsDecor:    cl.IsDecor,
-				IsArchived: cl.IsArchived,
+			co.Clothes = append(co.Clothes, ClothResponse{
+				Id:   cl.Id,
+				Name: cl.Name,
+				Type: cl.Type,
 			})
 		}
 
@@ -150,16 +144,10 @@ func (ph *PerformanceHandler) update(c *fiber.Ctx) error {
 		}
 
 		for _, cl := range cos.Clothes {
-			co.Clothes = append(co.Clothes, CostumeCloth{
-				Id:         cl.Id,
-				Name:       cl.Name,
-				Type:       cl.Type,
-				Location:   cl.Location,
-				Designer:   cl.Designer,
-				Condition:  cl.Condition,
-				Size:       cl.Size,
-				IsDecor:    cl.IsDecor,
-				IsArchived: cl.IsArchived,
+			co.Clothes = append(co.Clothes, ClothResponse{
+				Id:   cl.Id,
+				Name: cl.Name,
+				Type: cl.Type,
 			})
 		}
 

@@ -67,16 +67,9 @@ func (p *Performance) Create(ctx context.Context, args models.PerformanceInsertU
 
 		for _, cl := range clothes {
 			cos.Clothes = append(cos.Clothes, models.Cloth{
-				Id:         cl.Id,
-				Name:       cl.Name,
-				Type:       cl.Type,
-				Location:   cl.Location,
-				Designer:   cl.Designer,
-				Condition:  cl.Condition,
-				IsDecor:    cl.IsDecor,
-				IsArchived: cl.IsArchived,
-				Colors:     cl.Colors,
-				Materials:  cl.Materials,
+				Id:   cl.Id,
+				Name: cl.Name,
+				Type: cl.Type,
 			})
 		}
 
@@ -137,16 +130,9 @@ func (p *Performance) Update(ctx context.Context, args models.PerformanceInsertU
 
 		for _, cl := range clothes {
 			cos.Clothes = append(cos.Clothes, models.Cloth{
-				Id:         cl.Id,
-				Name:       cl.Name,
-				Type:       cl.Type,
-				Location:   cl.Location,
-				Designer:   cl.Designer,
-				Condition:  cl.Condition,
-				IsDecor:    cl.IsDecor,
-				IsArchived: cl.IsArchived,
-				Colors:     cl.Colors,
-				Materials:  cl.Materials,
+				Id:   cl.Id,
+				Name: cl.Name,
+				Type: cl.Type,
 			})
 		}
 

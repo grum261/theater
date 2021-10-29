@@ -19,32 +19,17 @@ func newCloth(db *pgxpool.Pool) *Cloth {
 
 func (c *Cloth) Create(ctx context.Context, p models.ClothInsertUpdate) (models.Cloth, error) {
 	cl, err := c.q.insertCloth(ctx, clothInsertParams{
-		Name:       p.Name,
-		TypeId:     p.TypeId,
-		Location:   p.Location,
-		Designer:   p.Designer,
-		Condition:  p.Condition,
-		Size:       p.Size,
-		IsDecor:    p.IsDecor,
-		IsArchived: p.IsArchived,
-		Colors:     p.Colors,
-		Materials:  p.Materials,
+		Name:   p.Name,
+		TypeId: p.TypeId,
 	})
 	if err != nil {
 		return models.Cloth{}, err
 	}
 
 	return models.Cloth{
-		Id:         cl.Id,
-		Name:       p.Name,
-		Type:       cl.Type,
-		Location:   p.Location,
-		Designer:   p.Designer,
-		Condition:  p.Condition,
-		IsDecor:    p.IsDecor,
-		IsArchived: p.IsArchived,
-		Colors:     cl.Colors,
-		Materials:  cl.Materials,
+		Id:   cl.Id,
+		Name: p.Name,
+		Type: cl.Type,
 	}, nil
 }
 
@@ -52,16 +37,8 @@ func (c *Cloth) Update(ctx context.Context, p models.ClothInsertUpdate) (models.
 	cl, err := c.q.updateCloth(ctx, clothUpdateParams{
 		Id: p.Id,
 		clothInsertParams: clothInsertParams{
-			Name:       p.Name,
-			TypeId:     p.TypeId,
-			Location:   p.Location,
-			Designer:   p.Designer,
-			Condition:  p.Condition,
-			Size:       p.Size,
-			IsDecor:    p.IsDecor,
-			IsArchived: p.IsArchived,
-			Colors:     p.Colors,
-			Materials:  p.Materials,
+			Name:   p.Name,
+			TypeId: p.TypeId,
 		},
 	})
 	if err != nil {
@@ -69,16 +46,9 @@ func (c *Cloth) Update(ctx context.Context, p models.ClothInsertUpdate) (models.
 	}
 
 	return models.Cloth{
-		Id:         cl.Id,
-		Name:       p.Name,
-		Type:       cl.Type,
-		Location:   p.Location,
-		Designer:   p.Designer,
-		Condition:  p.Condition,
-		IsDecor:    p.IsDecor,
-		IsArchived: p.IsArchived,
-		Colors:     cl.Colors,
-		Materials:  cl.Materials,
+		Id:   cl.Id,
+		Name: p.Name,
+		Type: cl.Type,
 	}, nil
 }
 
@@ -96,17 +66,9 @@ func (c *Cloth) GetWithLimitOffset(ctx context.Context, limit, offset int) ([]mo
 
 	for _, c := range clothes {
 		_out = append(_out, models.Cloth{
-			Id:         c.Id,
-			Name:       c.Name,
-			Type:       c.Type,
-			Location:   c.Location,
-			Designer:   c.Designer,
-			Condition:  c.Condition,
-			Size:       c.Size,
-			IsDecor:    c.IsDecor,
-			IsArchived: c.IsArchived,
-			Colors:     c.Colors,
-			Materials:  c.Materials,
+			Id:   c.Id,
+			Name: c.Name,
+			Type: c.Type,
 		})
 	}
 

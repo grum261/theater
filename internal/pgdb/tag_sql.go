@@ -11,10 +11,8 @@ func (q *Queries) insertTags(ctx context.Context, names []string, table string) 
 	var request string
 
 	switch table {
-	case "colors":
-		request = colorsInsert
-	case "materials":
-		request = materialsInsert
+	case "tags":
+
 	case "types":
 		request = clothesTypesInsert
 	}
@@ -47,12 +45,10 @@ func (q *Queries) updateTag(ctx context.Context, id int, name, table string) err
 	var request string
 
 	switch table {
-	case "colors":
-		request = colorsUpdate
-	case "materials":
-		request = materialsUpdate
+	case "tags":
+
 	case "types":
-		request = clothesTypesUpdate
+		request = clothesTypesInsert
 	}
 
 	if _, err := q.db.Exec(ctx, request, id, name); err != nil {
@@ -66,12 +62,10 @@ func (q *Queries) selectTags(ctx context.Context, table string) ([]tagReturn, er
 	var request string
 
 	switch table {
-	case "colors":
-		request = colorsSelect
-	case "materials":
-		request = materialsSelect
+	case "tags":
+
 	case "types":
-		request = clothesTypesSelect
+		request = clothesTypesInsert
 	}
 
 	rows, err := q.db.Query(ctx, request)
@@ -99,12 +93,10 @@ func (q *Queries) deleteTag(ctx context.Context, id int, table string) error {
 	var request string
 
 	switch table {
-	case "colors":
-		request = colorsDelete
-	case "materials":
-		request = materialsDelete
+	case "tags":
+
 	case "types":
-		request = clothesTypesDelete
+		request = clothesTypesInsert
 	}
 
 	if _, err := q.db.Exec(ctx, request, id); err != nil {
