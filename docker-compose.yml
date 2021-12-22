@@ -1,21 +1,80 @@
 version: "3.9"
+networks:
+  db:
 services:
-  api:
+  theater:
     build:
       context: .
       dockerfile: ./build/rest_server/Dockerfile
     ports:
     - "8000:8000"
-    command: rest_server -env /api/.env.dev
-    environment:
-      DATABASE_HOST: postgres
-    depends_on:
+    command: rest -env /api/.env -port :8000
+    networks:
+      - db
+    links:
       - postgres
+    depends_on:
+      - prometheus
+      - jaeger
+  loki:
+    image: grafana/loki:latest
+    volumes:
+      - ./build/loki:/etc/loki
+    ports:
+      - "3100:3100"
+    command: 
+      - -config.file=/etc/loki/loki-config.yml
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/log:/var/log
+      - ./build/promtail:/etc/promtail
+    command: -config.file=/etc/promtail/promtail-config.yml
+    depends_on:
+      - loki
   postgres:
-    image: postgres:14.0-alpine
+    image: postgres:14.1-alpine
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      db:
+        aliases:
+          - database
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./build/prometheus:/etc/prometheus
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana:latest
+    user: "1000"
+    volumes:
+      - ./build/grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - jaeger
+      - prometheus
+      - loki
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./internal/migrations:/migrations
+    networks:
+      - db
+    command: ["-path", "/migrations", "-database",  "pgx://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=disable", "up"]
+    depends_on:
+      - postgres

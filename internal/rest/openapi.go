@@ -2,12 +2,8 @@ package rest
 
 import "github.com/getkin/kin-openapi/openapi3"
 
-//go:generate go run ../../cmd/openapi_gen -path .
-//go:generate oapi-codegen -package openapi3 -generate types -o ../../pkg/openapi3/types.gen.go openapi3.yaml
-//go:generate oapi-codegen -package openapi3 -generate client -o ../../pkg/openapi3/client.gen.go     openapi3.yaml
-
-func NewOpenAPI() openapi3.T {
-	swagger := openapi3.T{
+func newOpenAPI() *openapi3.T {
+	swagger := &openapi3.T{
 		OpenAPI:    "3.0.0",
 		Components: openapi3.Components{},
 		Info: &openapi3.Info{
@@ -19,7 +15,7 @@ func NewOpenAPI() openapi3.T {
 		Security: []openapi3.SecurityRequirement{},
 		Servers: []*openapi3.Server{
 			{
-				URL:         "http://172.27.228.196:8000/",
+				URL:         "http://localhost:8000/",
 				Description: "Local dev",
 			},
 		},

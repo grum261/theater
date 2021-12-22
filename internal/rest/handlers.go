@@ -20,9 +20,7 @@ func NewHandlers(tagSvc TagService, clothSvc ClothService, costumeSvc CostumeSer
 
 func (h *Handlers) RegisterRoutes(r fiber.Router) {
 	r.Get("/openapi3.json", func(c *fiber.Ctx) error {
-		swagger := NewOpenAPI()
-
-		return c.Status(200).JSON(&swagger)
+		return c.Status(200).JSON(*newOpenAPI())
 	})
 
 	clothes := r.Group("/clothes")
